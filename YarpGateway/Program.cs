@@ -1,12 +1,14 @@
 ﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.RateLimiting;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Prometheus;
 using Serilog;
 using Serilog.Context;
 using System.Diagnostics;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,6 +46,15 @@ foreach (var cluster in clusters)
     }
 }
 
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.Authority = "https://localhost:7155";
+        options.RequireHttpsMetadata = false;
+        options.Audience = "api";
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
 {
@@ -65,6 +76,21 @@ builder.Services.AddOpenTelemetry()
             .AddHttpClientInstrumentation()
             .AddConsoleExporter();
     });
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("per-user", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.User.Identity?.Name
+            ?? context.Connection.RemoteIpAddress?.ToString()
+            ?? "anonymous",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 2
+            }));
+});
 
 var app = builder.Build();
 
@@ -93,6 +119,8 @@ app.UseExceptionHandler(errorApp =>
         await context.Response.WriteAsync("Gateway error");
     });
 });
+
+app.UseCors("FrontendPolicy");
 
 app.Use(async (context, next) =>
 {
@@ -140,15 +168,16 @@ app.Use(async (context, next) =>
     }
 });
 
+
 app.MapHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
-app.UseCors("FrontendPolicy");
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapMetrics();
 
-app.MapReverseProxy();
+app.MapReverseProxy().RequireRateLimiting("per-user");
 
 app.Run();
