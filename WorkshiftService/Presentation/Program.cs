@@ -14,6 +14,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Health checks
+builder.Services.AddHealthChecks();
+
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<DataContext>(x =>
@@ -72,6 +75,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapHealthChecks("/health");
 
 app.UseHttpsRedirection();
 

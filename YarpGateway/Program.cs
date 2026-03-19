@@ -1,12 +1,16 @@
-﻿using System.Diagnostics;
+﻿using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Prometheus;
 using Serilog;
 using Serilog.Context;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var clusters = builder.Configuration.GetSection("ReverseProxy:Clusters").GetChildren();
 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
@@ -19,6 +23,27 @@ builder.Host.UseSerilog();
 builder.Services
     .AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+
+var healthChecks = builder.Services.AddHealthChecks();
+
+foreach (var cluster in clusters)
+{
+    var destinations = cluster.GetSection("Destinations").GetChildren();
+
+    foreach (var destination in destinations)
+    {
+        var address = destination["Address"];
+
+        if (!string.IsNullOrEmpty(address))
+        {
+            healthChecks.AddUrlGroup(
+                new Uri($"{address.TrimEnd('/')}/health"),
+                name: cluster.Key
+            );
+        }
+    }
+}
+
 
 builder.Services.AddCors(options =>
 {
@@ -113,6 +138,11 @@ app.Use(async (context, next) =>
             context.Response.StatusCode,
             context.Request.Path);
     }
+});
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
 
 app.UseCors("FrontendPolicy");

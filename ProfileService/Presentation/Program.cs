@@ -16,6 +16,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Health checks
+builder.Services.AddHealthChecks();
+
 // Repositories
 builder.Services.AddScoped<IProfileRepository, ProfileRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
@@ -94,6 +97,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapHealthChecks("/health");
 
 app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
