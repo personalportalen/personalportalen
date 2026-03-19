@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver-dev
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong!Passw0rd
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  auth-api:
+    build: ./AuthService
+    env_file:
+      - .env
+    environment:
+      - ConnectionStrings__DefaultConnection=${LOCAL_DB_STRING}
+    depends_on:
+      - sqlserver
+
+  profile-api:
+    build: ./ProfileService
+    env_file:
+      - .env
+    environment:
+      - ConnectionStrings__DefaultConnection=${LOCAL_DB_STRING}
+    depends_on:
+      - sqlserver
+
+  booking-api:
+    build: ./BookingService
+    env_file:
+      - .env
+    environment:
+      - ConnectionStrings__DefaultConnection=${LOCAL_DB_STRING}
+    depends_on:
+      - sqlserver
+
+  workshift-api:
+    build: ./WorkshiftService
+    env_file:
+      - .env
+    environment:
+      - ConnectionStrings__DefaultConnection=${LOCAL_DB_STRING}
+    depends_on:
+      - sqlserver
+
+  yarp-gateway:
+    build: ./YarpGateway
+    ports:
+      - "5000:80"
+    depends_on:
+      - auth-api
+      - profile-api
+      - booking-api
+      - workshift-api
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+volumes:
+  sql_data:

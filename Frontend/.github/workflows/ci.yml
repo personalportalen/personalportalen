@@ -1,0 +1,87 @@
+name: Frontend DevSecOps CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  build-test-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Setup Node
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Lint code
+      - name: Run ESLint
+        run: npm run lint
+
+      # Build React app
+      - name: Build frontend
+        run: npm run build
+
+      # Setup Java for SonarCloud
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # Install SonarCloud scanner
+      - name: Install SonarCloud scanner
+        run: npm install -g sonarqube-scanner
+
+      # Run SonarCloud analysis
+      - name: Run SonarCloud scan
+        run: |
+          sonar-scanner \
+          -Dsonar.projectKey=StaffSystemW_Frontend \
+          -Dsonar.organization=staffsystemw \
+          -Dsonar.sources=. \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+      # Install CycloneDX for SBOM
+      - name: Install CycloneDX
+        run: npm install -g @cyclonedx/cyclonedx-npm
+
+      # Generate SBOM
+      - name: Generate SBOM
+        run: cyclonedx-npm --output-file sbom.json
+
+      # Upload SBOM artifact
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
+
+      # Filesystem security scan
+      - name: Run filesystem scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          severity: CRITICAL,HIGH
+
+      # Build Docker image
+      - name: Build Docker image
+        run: docker build -t staffsystemw-frontend .
+
+      # Scan Docker image
+      - name: Scan Docker image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: staffsystemw-frontend
+          severity: CRITICAL,HIGH

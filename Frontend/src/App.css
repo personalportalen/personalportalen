@@ -1,0 +1,165 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  text-decoration: none;
+  border: none;
+  background-color: transparent;
+  font-size: 1rem;
+}
+h1 {
+  font-size: 3rem;
+}
+
+html {
+  background-color: lightseagreen;
+  height: 100%;
+}
+
+main {
+  background-color: lightseagreen;
+  padding: 1rem;
+}
+
+.header_container {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+}
+
+.home_container {
+}
+
+.home_content-container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.home_add-workshift {
+  height: 35rem;
+  border-radius: 1rem;
+  width: 25rem;
+  border: 3px solid white;
+  display: grid;
+  place-items: center;
+  color: white;
+  box-shadow: 1px 1px 5px 2px rgb(21, 119, 114);
+}
+
+.home_add-workshift p {
+  font-size: 6rem;
+  font-weight: 200;
+}
+
+.aw_container {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  padding-top: 9rem;
+}
+
+.aw_container form {
+  display: flex;
+  width: 30rem;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.aw_container form div {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+}
+
+.aw_container form div label {
+  display: none;
+}
+
+.aw_container form div input {
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+.wc_container {
+  height: 35rem;
+  min-width: 25rem;
+  border-radius: 1rem;
+  background-color: white;
+  padding: 2rem;
+  box-shadow: 1px 1px 5px 2px rgb(21, 119, 114);
+  display: grid;
+  gap: 0.7rem;
+}
+
+.wc_info-group label {
+  font-size: 0.7rem;
+}
+
+.wc_button-container {
+  padding-top: 1rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.ew_container {
+  padding-top: 8rem;
+  display: grid;
+  place-items: center;
+}
+
+.ew_container form {
+  display: flex;
+  width: 30rem;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ew_container form div {
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+}
+
+.ew_container form div label {
+  display: none;
+}
+
+.ew_container form div input {
+  border-radius: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+.bookings_map_conatiner {
+  padding-top: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  padding-block: 0.5rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button-prim {
+  background-color: lightseagreen;
+  color: white;
+  border: 3px solid transparent;
+}
+
+.button-alt {
+  background-color: white;
+  color: rgb(25, 139, 134);
+  border: 3px solid lightseagreen;
+}
