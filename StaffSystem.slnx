@@ -22,4 +22,7 @@
     <Project Path="WorkshiftService/Domain/Domain.csproj" />
     <Project Path="WorkshiftService/Presentation/Presentation.csproj" />
   </Folder>
+  <Folder Name="/YarpGateway/">
+    <Project Path="YarpGateway/Gateway.csproj" />
+  </Folder>
 </Solution>
