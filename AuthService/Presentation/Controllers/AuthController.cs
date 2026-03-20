@@ -14,6 +14,9 @@ public class AuthController(IAuthService authService) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
 
+    /// <summary>
+    /// Register a new user
+    /// </summary>
     [HttpPost("signup")]
     public async Task<IActionResult> SignUp([FromBody] SignUpRequestDto dto)
     {
@@ -24,6 +27,9 @@ public class AuthController(IAuthService authService) : ControllerBase
            : StatusCode(result.StatusCode, new ApiResponse(false, result.Message));
     }
 
+    /// <summary>
+    /// Sign in user and set auth cookies
+    /// </summary>
     [HttpPost("signin")]
     public async Task<IActionResult> SignIn([FromBody] SignInRequestDto dto)
     {
@@ -51,7 +57,9 @@ public class AuthController(IAuthService authService) : ControllerBase
             : StatusCode(result.StatusCode, new ApiResponse(false, result.Message, result.Data));
     }
 
-
+    /// <summary>
+    /// Sign out user and clear cookies
+    /// </summary>
     [HttpPost("signout")]
     public async Task<IActionResult> Logout()
     {
@@ -73,6 +81,9 @@ public class AuthController(IAuthService authService) : ControllerBase
             : StatusCode(result.StatusCode, new ApiResponse(false, "User was not signed out due to an error", result));
     }
 
+    /// <summary>
+    /// Refresh access token using refresh token cookie
+    /// </summary>
     [HttpPost("refresh-token")]
     public async Task<IActionResult> RefreshToken()
     {
@@ -105,6 +116,9 @@ public class AuthController(IAuthService authService) : ControllerBase
         return Ok(new ApiResponse(true, "Token refreshed"));
     }
 
+    /// <summary>
+    /// Verify if email exists
+    /// </summary>
     [HttpPost("verifyemail")]
     public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequestDto request)
     {
@@ -117,6 +131,9 @@ public class AuthController(IAuthService authService) : ControllerBase
             : StatusCode(result.StatusCode, new ApiResponse(false, "Email was not verified due to an error", result));
     }
 
+    /// <summary>
+    /// Get current logged in user
+    /// </summary>
     [HttpGet("me")]
     [Authorize]
     public IActionResult Me()

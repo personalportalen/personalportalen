@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { signUp } from "../api/auth";
 
-const SignupForm = async () => {
+const SignupForm = () => {
   const [user, setUser] = useState();
 
   const handleSubmit = async (e) => {
@@ -12,7 +12,7 @@ const SignupForm = async () => {
       const userData = await signUp(
         user.Email,
         user.Password,
-        user.ConfirmPassword
+        user.ConfirmPassword,
       );
       console.log("Signed in user:", userData);
     } catch (err) {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Prometheus;
@@ -12,6 +13,16 @@ using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var routes = builder.Configuration
+    .GetSection("ReverseProxy:Routes")
+    .GetChildren();
+
+foreach (var route in routes)
+{
+    Console.WriteLine($"Route: {route.Key}");
+    Console.WriteLine($"Policy: {route["RateLimiterPolicy"]}");
+}
+
 var clusters = builder.Configuration.GetSection("ReverseProxy:Clusters").GetChildren();
 
 Log.Logger = new LoggerConfiguration()
@@ -21,6 +32,34 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Host.UseSerilog();
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("per-user", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.User.Identity?.Name
+            ?? context.Connection.RemoteIpAddress?.ToString()
+            ?? "anonymous",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 2
+            }));
+    options.AddPolicy("fixed", context =>
+    RateLimitPartition.GetFixedWindowLimiter(
+        context.User.Identity?.Name
+        ?? context.Connection.RemoteIpAddress?.ToString()
+        ?? "anonymous",
+        _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = 10,
+            Window = TimeSpan.FromMinutes(1),
+            QueueLimit = 2
+        }));
+});
+
+
 
 builder.Services
     .AddReverseProxy()
@@ -77,20 +116,7 @@ builder.Services.AddOpenTelemetry()
             .AddConsoleExporter();
     });
 
-builder.Services.AddRateLimiter(options =>
-{
-    options.AddPolicy("per-user", context =>
-        RateLimitPartition.GetFixedWindowLimiter(
-            context.User.Identity?.Name
-            ?? context.Connection.RemoteIpAddress?.ToString()
-            ?? "anonymous",
-            _ => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 10,
-                Window = TimeSpan.FromMinutes(1),
-                QueueLimit = 2
-            }));
-});
+
 
 var app = builder.Build();
 
@@ -169,6 +195,10 @@ app.Use(async (context, next) =>
 });
 
 
+
+
+app.UseRateLimiter();
+
 app.MapHealthChecks("/health", new HealthCheckOptions
 {
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
@@ -178,6 +208,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapMetrics();
 
-app.MapReverseProxy().RequireRateLimiting("per-user");
+app.MapReverseProxy();
 
 app.Run();
