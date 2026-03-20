@@ -1,27 +1,49 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 
-const Header = ({ isLoggedIn, setIsLoggedIn }) => {
-  const handleClick = async () => {
-    setIsLoggedIn(false);
+const Header = () => {
+  const navigate = useNavigate();
+
+  const { logout, isAuthenticated, userProfile } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
   };
+  if (userProfile?.data.completionStatus === "Incompleted") {
+    return;
+  }
 
   return (
     <div className="header_container">
-      <Link to={"/home"} className="button">
+      <Link to={"/"} className="button">
         Pass
       </Link>
-      <Link to={"/"} className="button">
-        Bokningar
-      </Link>
-      <Link to={"/"} className="">
-        <button className="button" onClick={handleClick}>
-          Logga ut
-        </button>
-      </Link>
-      <Link to={"/konto"} className="button">
-        Konto
-      </Link>
+
+      {isAuthenticated ? (
+        <>
+          <Link to={"/bookings"} className="button">
+            Bokningar
+          </Link>
+          <Link to={"/konto"} className="button">
+            Konto
+          </Link>
+          <Link to={"/"} className="">
+            <button className="button" onClick={handleLogout}>
+              Logga ut
+            </button>
+          </Link>
+        </>
+      ) : (
+        <Link to={"/login"} className="button">
+          Logga in
+        </Link>
+      )}
     </div>
   );
 };

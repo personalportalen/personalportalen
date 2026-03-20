@@ -1,50 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { updateWorkshift, getWorkshift } from "../api/workshift";
 
-const EditWorkshift = ({ shouldLoadAgain, setShouldLoadAgain }) => {
+const EditWorkshift = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const [workshift, setWorkshift] = useState({ area: "afsd", level: "asdf" });
-
-  useEffect(() => {
-    getWorkshift();
-  }, []);
-
-  const getWorkshift = async () => {
-    const id = location.pathname.split("/");
-    const idToSend = id[2];
-    const idToSend2 = idToSend.split(":");
-    const hoppla = idToSend2[1];
-    console.log("hoppla", hoppla);
-    const res = await fetch(`https://localhost:7103/api/workshift/${hoppla}`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
-    if (res.ok) {
-      const data = await res.json();
-      setWorkshift(data);
-    } else {
-      console.error("Kunde inte hämta workshift");
-    }
-  };
-
-  const editWorkshift = async () => {
-    const res = await fetch("https://localhost:7103/api/workshift/update", {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(workshift),
-    });
-    if (res.ok) {
-      setShouldLoadAgain(true);
-      navigate("/");
-    }
-  };
+  const { id } = useParams();
+  const [workshift, setWorkshift] = useState();
+  const [loading, setLoading] = useState(true);
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -53,9 +15,23 @@ const EditWorkshift = ({ shouldLoadAgain, setShouldLoadAgain }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    editWorkshift();
+    await updateWorkshift(workshift, id);
+    navigate("/");
   };
 
+  useEffect(() => {
+    async function getWorkshiftData() {
+      const workshiftData = await getWorkshift(id);
+      console.log("workshiftData", workshiftData);
+      setWorkshift(workshiftData);
+      setLoading(false);
+    }
+    getWorkshiftData();
+  }, []);
+
+  if (loading) {
+    return;
+  }
   return (
     <div className="ew_container">
       <form onSubmit={handleSubmit}>

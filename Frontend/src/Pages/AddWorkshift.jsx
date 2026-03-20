@@ -1,35 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
+import { createWorkshift } from "../api/workshift";
 
-const AddWorkshift = ({ shouldLoadAgain, setShouldLoadAgain }) => {
+const AddWorkshift = ({}) => {
   const [payload, setPayload] = useState({});
   const navigate = useNavigate();
-
-  //Denna är temporär:
-  const [userId, setUserId] = useState("1");
-
-  const createWorkshift = async (body) => {
-    const res = await fetch("https://localhost:7103/api/workshift/add", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-    if (res.ok) {
-      console.log("res", res);
-      setShouldLoadAgain(true);
-      navigate("/");
-    } else {
-      console.error(res);
-    }
-  };
+  const { user } = useAuth();
 
   const handleSubmit = async (e) => {
+    console.log("user", user);
+
     e.preventDefault();
     console.log("submitting");
-    const newPayload = { ...payload, ["AddedByUserId"]: userId };
+    const newPayload = { ...payload, ["AddedByUserId"]: user };
     setPayload(newPayload);
 
     await createWorkshift(newPayload);

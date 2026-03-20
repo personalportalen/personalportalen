@@ -30,7 +30,10 @@ main {
   gap: 4rem;
 }
 
-.home_container {
+.home_container h1 {
+  text-align: center;
+  padding-block: 1rem;
+  font-size: 2rem;
 }
 
 .home_content-container {
@@ -162,4 +165,38 @@ main {
   background-color: white;
   color: rgb(25, 139, 134);
   border: 3px solid lightseagreen;
+}
+
+.complete-profile {
+  padding: 3rem 17rem;
+}
+
+.complete-profile h1 {
+  text-align: center;
+}
+
+.complete-profile form {
+  display: grid;
+  gap: 0.7rem;
+  padding-block: 1rem;
+}
+
+.complete-profile form input {
+  background-color: white;
+  padding: 0.5rem;
+  border-radius: 1rem;
+}
+
+.complete-profile button {
+  border: 1px solid black;
+  padding: 0.5rem;
+  margin-top: 1rem;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+
+.complete-profile button:hover {
+  background-color: black;
+  border: 1px solid black;
+  color: white;
 }

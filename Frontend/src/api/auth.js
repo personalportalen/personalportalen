@@ -1,6 +1,10 @@
 import { apiFetch } from "./config";
 import { AUTH_API_URL } from "./config";
 
+export async function getMe() {
+  return apiFetch(AUTH_API_URL, "me");
+}
+
 export async function checkEmailExists(email) {
   return apiFetch(AUTH_API_URL, "verifyemail", {
     method: "POST",
@@ -8,10 +12,11 @@ export async function checkEmailExists(email) {
   });
 }
 
-export async function signUp(email, password, confirmPassword) {
+export async function signUp(userInformation) {
+  console.log("Signup payload:", userInformation);
   return apiFetch(AUTH_API_URL, "signup", {
     method: "POST",
-    body: JSON.stringify({ email, password, confirmPassword }),
+    body: JSON.stringify(userInformation),
   });
 }
 

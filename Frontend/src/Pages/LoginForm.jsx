@@ -1,24 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signIn } from "../api/auth";
+import { useAuth } from "../context/AuthProvider";
 
-const LoginForm = ({
-  isLoggedIn,
-  setIsLoggedIn,
-  authorityLevel,
-  setAuthorityLevel,
-  setUserProfile,
-}) => {
-  /*   const getToken = async () => {
-    const token = await cookieStore.get("token");
-    const value = token.value;
-    const decoded = jwtDecode(value);
-    const longName =
-      "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
-    setAuthorityLevel(decoded[longName]);
-  }; */
-
+const LoginForm = () => {
+  const { login } = useAuth();
   const [user, setUser] = useState();
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -26,10 +13,7 @@ const LoginForm = ({
 
     console.log("user", user);
     try {
-      const userData = await signIn(user.email, user.password);
-      console.log("Signed in user:", userData);
-      console.log("Omdirigerar");
-      setUserProfile(true);
+      login(user.email, user.password);
       navigate("/");
     } catch (err) {
       alert(err.message);

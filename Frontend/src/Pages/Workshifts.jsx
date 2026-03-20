@@ -2,12 +2,7 @@ import React from "react";
 import WorkshiftCard from "../Components/WorkshiftCard";
 import { Link } from "react-router-dom";
 
-const Home = ({
-  workshifts,
-  shouldLoadAgain,
-  setShouldLoadAgain,
-  authorityLevel,
-}) => {
+const Workshifts = ({ workshifts, authorityLevel }) => {
   return (
     <div className="home_container">
       <h1>Lediga pass att boka</h1>
@@ -21,17 +16,11 @@ const Home = ({
         )}
 
         {workshifts.map((workshift) => (
-          <WorkshiftCard
-            key={workshift.id}
-            workshift={workshift}
-            shouldLoadAgain={shouldLoadAgain}
-            setShouldLoadAgain={setShouldLoadAgain}
-            authorityLevel={authorityLevel}
-          />
+          <WorkshiftCard workshift={workshift} />
         ))}
       </div>
     </div>
   );
 };
 
-export default Home;
+export default Workshifts;

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
 import "./App.css";
+import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "./Pages/Home";
+import { useAuth } from "./context/AuthProvider";
+import { getWorkshifts } from "./api/workshift";
 import AddWorkshift from "./Pages/AddWorkshift";
 import EditWorkshift from "./Pages/EditWorkshift";
 import Login from "./Pages/LoginForm";
@@ -9,125 +10,84 @@ import SignupForm from "./Pages/SignupForm";
 import Header from "./Components/Header";
 import Bookings from "./Pages/Bookings";
 import Account from "./Pages/Account";
+import Workshifts from "./Pages/Workshifts";
+import ProtectedRoute from "./Components/ProtectedRoute";
+import CompleteProfile from "./Pages/CompleteProfile";
 
 function App() {
-  const [userProfile, setUserProfile] = useState();
+  const { isAuthenticated } = useAuth();
   const [workshifts, setWorkshifts] = useState([]);
-  const [shouldLoadAgain, setShouldLoadAgain] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authorityLevel, setAuthorityLevel] = useState();
 
-  const getWorkshifts = async () => {
-    const res = await fetch("https://localhost:7103/api/workshift/getall");
-    if (res.ok) {
-      const data = await res.json();
-      setWorkshifts(data);
-    } else {
-      console.error("res", res);
-    }
-  };
-
-  const getUserProfile = async (token) => {
-    const res = await fetch(`https://localhost:7294/api/profile`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    if (res.ok) {
-      const data = res.json();
-      return data;
-    } else {
+  useEffect(() => {
+    if (!isAuthenticated) {
       return;
     }
-  };
+    const fetchData = async () => {
+      try {
+        const workshiftsData = await getWorkshifts();
+        setWorkshifts(workshiftsData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  useEffect(() => {
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("token="));
-    if (token) {
-      getUserProfile(token.split("=")[1]).then((profile) => {
-        setUserProfile(profile);
-      });
-    }
-
-    getWorkshifts();
-  }, []);
-
-  useEffect(() => {
-    getWorkshifts();
-  }, [shouldLoadAgain]);
+    fetchData();
+  }, [isAuthenticated]);
 
   return (
     <>
       <main>
-        {userProfile ? (
-          <>
-            <Header isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-            <Routes>
-              <Route
-                path="/home"
-                element={
-                  <Home
-                    workshifts={workshifts}
-                    shouldLoadAgain={shouldLoadAgain}
-                    setShouldLoadAgain={setShouldLoadAgain}
-                    authorityLevel={authorityLevel}
-                  />
-                }
-              />
-              <Route
-                path="/add"
-                element={
-                  <AddWorkshift
-                    shouldLoadAgain={shouldLoadAgain}
-                    setShouldLoadAgain={setShouldLoadAgain}
-                  />
-                }
-              />
-              <Route
-                path="/edit/:id"
-                element={
-                  <EditWorkshift
-                    shouldLoadAgain={shouldLoadAgain}
-                    setShouldLoadAgain={setShouldLoadAgain}
-                  />
-                }
-              />
-              <Route
-                path="/login"
-                element={
-                  <Login
-                    authorityLevel={authorityLevel}
-                    setAuthorityLevel={setAuthorityLevel}
-                    isLoggedIn={isLoggedIn}
-                    setIsLoggedIn={setIsLoggedIn}
-                  />
-                }
-              />
-              <Route path="/signup" element={<SignupForm />} />
-              <Route path="/" element={<Bookings />} />
-              <Route path="/konto" element={<Account />} />
-            </Routes>
-          </>
-        ) : (
-          <Routes>
-            <Route
-              path={"/"}
-              element={
-                <Login
-                  isLoggedIn={isLoggedIn}
-                  setIsLoggedIn={setIsLoggedIn}
-                  setAuthorityLevel={setAuthorityLevel}
-                  setUserProfile={setUserProfile}
-                />
-              }
-            />
-            <Route path="/signup" element={<SignupForm />} />
-          </Routes>
-        )}
+        <Header isAuthenticated={isAuthenticated} />
+        <Routes>
+          <Route
+            path="/login"
+            element={<Login isAuthenticated={isAuthenticated} />}
+          />
+          <Route path="/signup" element={<SignupForm />} />
+
+          <Route path="/" element={<Workshifts workshifts={workshifts} />} />
+          <Route
+            path="/add"
+            element={
+              <ProtectedRoute>
+                <AddWorkshift />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditWorkshift />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/bookings"
+            element={
+              <ProtectedRoute>
+                <Bookings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/konto"
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/complete-profile"
+            element={
+              <ProtectedRoute>
+                <CompleteProfile />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
       </main>
     </>
   );
