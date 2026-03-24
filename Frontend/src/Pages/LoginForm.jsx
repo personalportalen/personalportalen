@@ -26,33 +26,37 @@ const LoginForm = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <h1>Logga in</h1>
-        <div className="login_input-group">
-          <label>Email</label>
-          <input
-            onChange={handleChange}
-            name="email"
-            type="email"
-            placeholder="Email"
-          />
+    <div className="login_page">
+      <div className="login_container">
+        <form onSubmit={handleSubmit}>
+          <h1>Logga in</h1>
+          <div className="login_input-group">
+            <label>Email</label>
+            <input
+              onChange={handleChange}
+              name="email"
+              type="email"
+              placeholder="Email"
+            />
+          </div>
+          <div className="login_input-group">
+            <label>Password</label>
+            <input
+              onChange={handleChange}
+              name="password"
+              type="password"
+              placeholder="Password"
+            />
+          </div>
+          <button className="button button-alt" type="submit">
+            Logga in
+          </button>
+        </form>
+        <div className="no-account_group">
+          <p>Har du inget konto?</p>
+          <a to={"/signup"}>Klicka här för att registrera dig</a>
         </div>
-        <div className="login_input-group">
-          <label>Password</label>
-          <input
-            onChange={handleChange}
-            name="password"
-            type="password"
-            placeholder="Password"
-          />
-        </div>
-        <button className="button button-alt" type="submit">
-          Logga in
-        </button>
-      </form>
-      <p>Har du inget konto?</p>
-      <Link to={"/signup"}>Klicka här för att registrera dig</Link>
+      </div>
     </div>
   );
 };

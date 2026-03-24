@@ -14,13 +14,18 @@ h1 {
   font-size: 3rem;
 }
 
+a {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 html {
-  background-color: lightseagreen;
+  background-color: beige;
   height: 100%;
 }
 
 main {
-  background-color: lightseagreen;
+  background-color: beige;
   padding: 1rem;
 }
 
@@ -150,7 +155,6 @@ main {
   display: flex;
   justify-content: center;
   padding-block: 0.5rem;
-  border-radius: 1rem;
   font-weight: 600;
   cursor: pointer;
 }
