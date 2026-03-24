@@ -18,7 +18,9 @@ export function AuthProvider({ children }) {
       const userData = await getMe();
       setUser(userData);
       try {
+        console.log("Trying to get currentuser");
         const profileUserData = await getCurrentUserProfile();
+        console.log("profileUserData", profileUserData);
         setUserProfile(profileUserData);
       } catch (err) {
         console.error(err);

@@ -15,7 +15,7 @@ public class ProfileController(IProfileService profileService) : ControllerBase
     private readonly IProfileService _profileService = profileService;
 
     [Authorize]
-    [HttpGet]
+    [HttpGet("getprofile")]
     public async Task<IActionResult> Get()
     {
         var userId = User.Identity?.Name;

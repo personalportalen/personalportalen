@@ -2,9 +2,7 @@ import { PROFILE_API_URL } from "./config";
 import { apiFetch } from "./config";
 
 export async function getCurrentUserProfile() {
-  return apiFetch(PROFILE_API_URL, "", {
-    method: "GET",
-  });
+  return apiFetch(PROFILE_API_URL, "getprofile");
 }
 
 export async function updateProfile(payload) {

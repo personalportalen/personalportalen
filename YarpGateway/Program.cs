@@ -1,4 +1,5 @@
 ﻿using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.RateLimiting;
@@ -10,6 +11,7 @@ using Serilog;
 using Serilog.Context;
 using System.Diagnostics;
 using System.Threading.RateLimiting;
+using Yarp.ReverseProxy.Transforms;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,7 +65,20 @@ builder.Services.AddRateLimiter(options =>
 
 builder.Services
     .AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"))
+    .AddTransforms(builderContext =>
+    {
+        builderContext.AddRequestTransform(async transformContext =>
+        {
+            var token = transformContext.HttpContext.Request.Cookies["access_token"];
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                transformContext.ProxyRequest.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+        });
+    });
 
 var healthChecks = builder.Services.AddHealthChecks();
 
@@ -91,6 +106,21 @@ builder.Services.AddAuthentication("Bearer")
         options.Authority = "https://localhost:7155";
         options.RequireHttpsMetadata = false;
         options.Audience = "api";
+
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Cookies["access_token"];
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    context.Token = token;
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddAuthorization();

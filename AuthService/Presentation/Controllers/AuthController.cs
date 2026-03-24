@@ -36,6 +36,11 @@ public class AuthController(IAuthService authService) : ControllerBase
 
         var result = await _authService.SignInAsync(dto);
 
+        if (!result.Succeeded || result.Data == null)
+        {
+            return StatusCode(result.StatusCode, new ApiResponse(false, result.Message));
+        }
+
         Response.Cookies.Append("accessToken", result.Data.Token, new CookieOptions
         {
             HttpOnly = true,

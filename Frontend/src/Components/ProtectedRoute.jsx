@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading, userProfile } = useAuth();
 
   console.log("ProtectedRoute - isAuthenticated", isAuthenticated);
-  console.log("userProfile.completionStatus", userProfile?.data);
+  console.log("userProfile", userProfile);
 
   if (loading || (isAuthenticated && userProfile === null)) {
     return <p>Laddar...</p>;
