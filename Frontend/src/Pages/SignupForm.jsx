@@ -1,62 +1,91 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { signUp } from "../api/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { signUp, signUpAndSignIn } from "../api/auth";
 
 const SignupForm = () => {
-  const [user, setUser] = useState({});
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("user", user);
+    setError(null);
+
+    if (form.password !== form.confirmPassword) {
+      return setError("Lösenorden matchar inte");
+    }
 
     try {
-      const userData = await signUp(user);
-      console.log("Signed in user:", userData);
-    } catch (err) {
-      alert(err.message);
-    }
-  };
+      setLoading(true);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser((prevState) => ({ ...prevState, [name]: value }));
+      await signUpAndSignIn(form);
+      navigate("/");
+    } catch (err) {
+      setError(err.message || "Något gick fel");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <h1>Registrera</h1>
+
         <div className="login_input-group">
           <label>Email</label>
           <input
-            onChange={handleChange}
-            name="Email"
+            value={form.email}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, email: e.target.value }))
+            }
             type="email"
             placeholder="Email"
           />
         </div>
+
         <div className="login_input-group">
           <label>Password</label>
           <input
-            onChange={handleChange}
-            name="Password"
+            value={form.password}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, password: e.target.value }))
+            }
             type="password"
             placeholder="Password"
           />
         </div>
+
         <div className="login_input-group">
           <label>Confirm password</label>
           <input
-            onChange={handleChange}
-            name="ConfirmPassword"
+            value={form.confirmPassword}
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                confirmPassword: e.target.value,
+              }))
+            }
             type="password"
             placeholder="Confirm password"
           />
         </div>
-        <button type="submit">Registrera</button>
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Registrerar..." : "Registrera"}
+        </button>
       </form>
+
       <p>Har du redan ett konto?</p>
-      <Link to={"/login"}>Klicka här för att logga in</Link>
+      <Link to="/login">Klicka här för att logga in</Link>
     </div>
   );
 };

@@ -54,5 +54,6 @@ export async function apiFetch(domain, path = "", options = {}) {
     throw new Error(data.message || "API Error");
   }
 
-  return data.data;
+  if (data.data !== undefined) return data.data;
+  return data;
 }

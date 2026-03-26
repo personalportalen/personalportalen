@@ -21,7 +21,7 @@ export async function signUp(userInformation) {
 }
 
 export async function signIn(email, password) {
-  return apiFetch(AUTH_API_URL, "signin", {
+  await apiFetch(AUTH_API_URL, "signin", {
     method: "POST",
     body: JSON.stringify({ email, password }),
   });
@@ -31,4 +31,13 @@ export async function signOut() {
   return apiFetch(AUTH_API_URL, "signout", {
     method: "POST",
   });
+}
+
+//Flow functions
+
+export async function signUpAndSignIn(userInformation) {
+  await signUp(userInformation);
+  const res = await signIn(userInformation.email, userInformation.password);
+  console.log("res", res);
+  return res;
 }

@@ -4,12 +4,15 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Prometheus;
 using Serilog;
 using Serilog.Context;
 using System.Diagnostics;
+using System.Text;
 using System.Threading.RateLimiting;
 using Yarp.ReverseProxy.Transforms;
 
@@ -70,7 +73,7 @@ builder.Services
     {
         builderContext.AddRequestTransform(async transformContext =>
         {
-            var token = transformContext.HttpContext.Request.Cookies["access_token"];
+            var token = transformContext.HttpContext.Request.Cookies["accessToken"];
 
             if (!string.IsNullOrEmpty(token))
             {
@@ -100,24 +103,57 @@ foreach (var cluster in clusters)
     }
 }
 
-builder.Services.AddAuthentication("Bearer")
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
     .AddJwtBearer("Bearer", options =>
     {
-        options.Authority = "https://localhost:7155";
         options.RequireHttpsMetadata = false;
-        options.Audience = "api";
+
+        options.Configuration = new OpenIdConnectConfiguration();
+        options.ConfigurationManager = null;
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = "DreamTeam",
+
+            ValidateAudience = true,
+            ValidAudience = "DreamTeamUsers",
+
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+        Encoding.UTF8.GetBytes("RasmusSecretKey1234567890!@#$%^&*()")
+        ),
+
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
 
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
             {
-                var token = context.Request.Cookies["access_token"];
+                var token = context.Request.Cookies["accessToken"];
+                Console.WriteLine("COOKIE TOKEN: " + token);
 
                 if (!string.IsNullOrEmpty(token))
                 {
                     context.Token = token;
                 }
 
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine("❌ JWT ERROR: " + context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                Console.WriteLine("✅ TOKEN VALID");
                 return Task.CompletedTask;
             }
         };

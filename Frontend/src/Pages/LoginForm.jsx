@@ -54,7 +54,7 @@ const LoginForm = () => {
         </form>
         <div className="no-account_group">
           <p>Har du inget konto?</p>
-          <a to={"/signup"}>Klicka här för att registrera dig</a>
+          <Link to={"/signup"}>Klicka här för att registrera dig</Link>
         </div>
       </div>
     </div>
