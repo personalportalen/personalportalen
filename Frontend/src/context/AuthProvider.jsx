@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getMe, signIn, signOut } from "../api/auth";
-import { getCurrentUserProfile } from "../api/profile";
+import { getMe, signIn, signOut } from "../features/auth/api";
+import { getCurrentUserProfile } from "../features/profile/api";
 
 export const AuthContext = createContext();
 
@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
 
   async function login(email, password) {
     await signIn(email, password);
-    await checkAuth();
+    return await checkAuth();
   }
 
   async function logout() {
@@ -51,12 +51,18 @@ export function AuthProvider({ children }) {
     return hasRole("Admin");
   }
 
+  const isAuthenticated = !!user;
+  const hasProfile = !!userProfile;
+  const isProfileComplete = !!userProfile?.isComplete;
+
   const value = {
     user,
     userProfile,
     setUserProfile,
     roles: user?.roles || [],
-    isAuthenticated: !!user,
+    isAuthenticated,
+    hasProfile,
+    isProfileComplete,
     loading,
     login,
     logout,

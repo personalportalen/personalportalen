@@ -82,4 +82,36 @@ public class ProfileService(IProfileRepository profileRepository, IAddressReposi
         await _profileRepository.SaveAsync();
         return ServiceResult<ProfileEntity>.Success(profile);
     }
+
+    public async Task<ServiceResult<ProfileEntity>> CompleteProfile(string userId, CompleteProfileForm form)
+    {
+        var profile = await _profileRepository.GetByIdAsync(userId);
+        if (profile == null)
+            return ServiceResult<ProfileEntity>.Fail("No profile found.", 404);
+
+        if (profile.IsProfileCompleted)
+            return ServiceResult<ProfileEntity>.Fail("Profile is already completed.", 400);
+
+        profile.FirstName = form.FirstName;
+        profile.LastName = form.LastName;
+        profile.PhoneNumber = form.PhoneNumber;
+        profile.ImageUrl = form.ImageUrl;
+        profile.IsProfileCompleted = true;
+        profile.ProfileCompletedAt = DateTime.UtcNow;
+        profile.UpdatedAt = DateTime.UtcNow;
+
+        profile.Address = new AddressEntity
+        {
+            Street = form.Address.Street,
+            City = form.Address.City,
+            State = form.Address.State,
+            ZipCode = form.Address.ZipCode,
+            Country = form.Address.Country
+        };
+
+        await _profileRepository.UpdateAsync(profile);
+        await _profileRepository.SaveAsync();
+
+        return ServiceResult<ProfileEntity>.Success(profile);
+    }
 }

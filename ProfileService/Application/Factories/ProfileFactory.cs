@@ -16,7 +16,7 @@ public static class ProfileFactory
             Email = profile.EmailAddress,
             Phone = profile.PhoneNumber ?? "",
             ImageUrl = profile.ImageUrl ?? "",
-            CompletionStatus = profile.CompletionStatus,
+            IsProfileCompleted = profile.IsProfileCompleted,
             Address = profile.Address == null ? null! : new Address
             {
                 Street = profile.Address.Street,

@@ -33,7 +33,7 @@ public class UserCreatedEventHandler
                 PhoneNumber = "",
                 ImageUrl = "",
                 AddressId = null,
-                CompletionStatus = "Incomplete"
+                IsProfileCompleted = false
 
             };
 

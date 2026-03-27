@@ -8,6 +8,6 @@ public class Profile()
     public string? Phone { get; set; }
     public string? ImageUrl { get; set; }
     public Address Address { get; set; } = null!;
-    public string CompletionStatus { get; set; } = null!;
+    public bool IsProfileCompleted { get; set; }
 
 }

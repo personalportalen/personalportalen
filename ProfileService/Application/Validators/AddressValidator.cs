@@ -1,13 +1,12 @@
-﻿using Domain.Entities;
+﻿using Application.Dtos;
+using Domain.Entities;
 using FluentValidation;
 
 namespace Application.Validators;
-public class AddressValidator : AbstractValidator<AddressEntity> 
+public class AddressValidator : AbstractValidator<AddressDto> 
 {
     public AddressValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty();
 
         RuleFor(x => x.Street)
             .NotEmpty();

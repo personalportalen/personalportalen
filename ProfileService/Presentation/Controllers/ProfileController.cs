@@ -44,8 +44,8 @@ public class ProfileController(IProfileService profileService) : ControllerBase
     }
 
 
-    [Authorize]
-    [HttpPut]
+    //[Authorize]
+    [HttpPut("update")]
     public async Task<IActionResult> Update([FromBody] ProfileUpdateForm dto)
     {
         if (!ModelState.IsValid)
@@ -62,5 +62,25 @@ public class ProfileController(IProfileService profileService) : ControllerBase
             return StatusCode(result.StatusCode, new ApiResponse(false, "Could not update profile", result));
 
         return Ok(new ApiResponse(true, "Profile was updated", result));
+    }
+
+    //[Authorize]
+    [HttpPut("complete")]
+    public async Task<IActionResult> Complete([FromBody] CompleteProfileForm dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(new ApiResponse(false, "Profile data is required"));
+
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized(new ApiResponse(false, "User id not found"));
+
+        var result = await _profileService.CompleteProfile(userId, dto);
+
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, new ApiResponse(false, "Could not complete profile", result));
+
+        return Ok(new ApiResponse(true, "Profile was completed", result));
     }
 }
