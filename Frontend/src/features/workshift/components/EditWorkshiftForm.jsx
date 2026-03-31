@@ -1,33 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { getWorkshift, updateWorkshift } from "../api";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getWorkshift, updateWorkshift } from '../api';
 
-const EditWorkshiftForm = () => {
+const EditWorkshiftForm = ({ workshift }) => {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const [workshift, setWorkshift] = useState();
   const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({ workshift });
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
-    setWorkshift((prevState) => ({ ...prevState, [name]: value }));
+    setForm((prevState) => ({ ...prevState, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     await updateWorkshift(workshift, id);
-    navigate("/");
+    navigate('/');
   };
-
-  useEffect(() => {
-    async function getWorkshiftData() {
-      const workshiftData = await getWorkshift(id);
-      console.log("workshiftData", workshiftData);
-      setWorkshift(workshiftData);
-      setLoading(false);
-    }
-    getWorkshiftData();
-  }, []);
 
   if (loading) {
     return;

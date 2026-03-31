@@ -2,7 +2,7 @@ import AddWorkshiftForm from "../components/AddWorkshiftForm";
 
 const AddWorkshiftPage = () => {
   return (
-    <div className="aw_container">
+    <div className="standard-form_page">
       <AddWorkshiftForm />
     </div>
   );

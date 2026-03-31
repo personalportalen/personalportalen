@@ -22,9 +22,9 @@ const CompleteProfileForm = () => {
       id: 10,
       street: "",
       city: "",
-      state: "",
+      state: "test",
       zipCode: "",
-      country: "",
+      country: "test",
     },
   });
 

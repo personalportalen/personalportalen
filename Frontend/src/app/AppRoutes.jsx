@@ -1,18 +1,19 @@
-import { Routes, Route } from "react-router-dom";
-import AddWorkshiftPage from "../features/workshift/pages/AddWorkshiftPage";
-import EditWorkshiftPage from "../features/workshift/pages/EditWorkshiftPage";
-import WorkshiftsPage from "../features/workshift/pages/WorkshiftsPage";
-import BookingsPage from "../features/booking/pages/BookingsPage";
-import CompleteProfilePage from "../features/profile/pages/CompleteProfilePage";
-import SignupPage from "../features/auth/pages/SignupPage";
-import LoginPage from "../features/auth/pages/LoginPage";
-import AccountPage from "../features/profile/pages/AccountPage";
-import ProtectedProfileRoute from "../shared/components/ProtectedProfileRoute";
-import ProtectedRoute from "../shared/Components/ProtectedRoute";
+import { Routes, Route } from 'react-router-dom';
+import AddWorkshiftPage from '../features/workshift/pages/AddWorkshiftPage';
+import EditWorkshiftPage from '../features/workshift/pages/EditWorkshiftPage';
+import WorkshiftsPage from '../features/workshift/pages/WorkshiftsPage';
+import BookingsPage from '../features/booking/pages/BookingsPage';
+import CompleteProfilePage from '../features/profile/pages/CompleteProfilePage';
+import SignupPage from '../features/auth/pages/SignupPage';
+import LoginPage from '../features/auth/pages/LoginPage';
+import AccountPage from '../features/profile/pages/AccountPage';
+import ProtectedProfileRoute from '../shared/components/ProtectedProfileRoute';
+import ProtectedRoute from '../shared/Components/ProtectedRoute';
 
 const AppRoutes = () => {
   return (
     <Routes>
+      <Route path="/ui" element={<EditWorkshiftPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/" element={<WorkshiftsPage />} />
