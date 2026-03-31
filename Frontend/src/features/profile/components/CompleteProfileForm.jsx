@@ -1,4 +1,6 @@
 import "./CompleteProfileForm.css"
+import {ArrowRight} from "lucide-react"
+
 import React, { useState } from "react";
 import { completeProfile } from "../api";
 import { useNavigate } from "react-router-dom";
@@ -67,7 +69,7 @@ const CompleteProfileForm = () => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="complete_input-group">
-        <span>Mejladress</span>
+        <label>Mejladress</label>
         {/* Visa email om du vill, men skicka inte med om backend inte behöver det */}
         <input
           disabled
@@ -76,7 +78,7 @@ const CompleteProfileForm = () => {
           />
       </div>
       <div className="complete_input-group">
-        <span>Namn</span>
+        <label>Namn</label>
         <div>
           <input
             disabled={loading}
@@ -96,18 +98,18 @@ const CompleteProfileForm = () => {
       </div>
 
       <div className="complete_input-group">
-        <span>Telefon</span>
+        <label>Telefon</label>
         <input
           disabled={loading}
           name="phoneNumber"
-          placeholder="Telefon"
+          placeholder="Telefonnummer"
           value={form.phoneNumber}
           onChange={handleChange}
         />
       </div>
 
       <div className="complete_input-group address">
-        <span>Adress</span>
+        <label>Adress</label>
         <input
           disabled={loading}
           name="street"
@@ -132,14 +134,10 @@ const CompleteProfileForm = () => {
           />
         </div>
       </div>
-
-
-
-
       {error && <p style={{ color: "red" }}>{error}</p>}
-
       <button disabled={loading} type="submit" className="button button-prim">
         {loading ? "Sparar..." : "Spara"}
+        {!loading && <ArrowRight className="complete_icon_arrow" />}
       </button>
     </form>
   );
