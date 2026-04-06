@@ -1,0 +1,53 @@
+.signup_page {
+  display: grid;
+  grid-template-columns: 5fr 4fr;
+  height: 100vh;
+  overflow: hidden;
+  background-color: white;
+}
+
+.signup_page form h1{
+    letter-spacing: -3%;
+}
+
+.signup_page img {
+  height: calc(100vh - 2rem);
+  width: calc(100% - 2rem);
+  object-fit: cover;
+  margin: 1rem;
+  border-radius: 12px;
+}
+
+
+.signup_left-side {
+  display: grid;
+  grid-template-rows: 3fr 1fr;
+  max-width: 60%;
+  padding-left: 3rem;
+  height: 100%;
+}
+
+
+
+.already-account_group {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-bottom: 3rem;
+}
+
+.already-account_group a {
+  color: black;
+  text-decoration: none;
+  font-weight: 700;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.signup_icon_arrowright{
+    height: 16px;
+    width: 16px;
+}

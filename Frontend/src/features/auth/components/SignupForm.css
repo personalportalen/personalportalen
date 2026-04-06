@@ -1,0 +1,29 @@
+.signup_page form {
+  display: grid;
+  margin: auto 0rem 0rem 0rem;
+}
+
+.signup_page form button {
+  margin-top: 3rem;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 58px;
+}
+
+
+.signup_first-header {
+  color: #7c7c7c;
+}
+
+.signup_input-group {
+  padding-top: 1.5rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.signup_input-group label {
+  font-weight: 500;
+  font-size: 16px;
+}
+

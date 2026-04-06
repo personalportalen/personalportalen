@@ -6,7 +6,7 @@ services:
     container_name: sqlserver-dev
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: ${SA_PASSWORD}
+      SA_PASSWORD: ${SQL_PASSWORD}
     ports:
       - "1433:1433"
     volumes:
@@ -24,9 +24,8 @@ services:
     env_file:
       - .env
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__DefaultConnection: Server=sqlserver;Database=${AUTH_DB};User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${AUTH_CONNECTION_STRING}
     depends_on:
       - sqlserver
     ports:
@@ -39,9 +38,8 @@ services:
     env_file:
       - .env
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__DefaultConnection: Server=sqlserver;Database=${PROFILE_DB};User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${PROFILE_CONNECTION_STRING}
     depends_on:
       - sqlserver
     ports:
@@ -54,9 +52,8 @@ services:
     env_file:
       - .env
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__DefaultConnection: Server=sqlserver;Database=${BOOKING_DB};User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${BOOKING_CONNECTION_STRING}
     depends_on:
       - sqlserver
     ports:
@@ -69,9 +66,8 @@ services:
     env_file:
       - .env
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
-      ConnectionStrings__DefaultConnection: Server=sqlserver;Database=${WORKSHIFT_DB};User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__DefaultConnection: ${WORKSHIFT_CONNECTION_STRING}
     depends_on:
       - sqlserver
     ports:

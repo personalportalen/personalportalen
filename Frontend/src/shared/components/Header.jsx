@@ -1,6 +1,9 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthProvider";
+import React from 'react';
+import './Header.css';
+import { CalendarCheck2, IdCardLanyard, User } from 'lucide-react';
+
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthProvider';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -10,41 +13,39 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate("/login");
+      navigate('/login');
     } catch (err) {
-      console.error("Logout failed", err);
+      console.error('Logout failed', err);
     }
   };
-  if (userProfile?.data.completionStatus === "Incompleted") {
-    return;
-  }
 
   return (
-    <div className="header_container">
-      <Link to={"/"} className="button">
-        Pass
-      </Link>
-
-      {isAuthenticated ? (
-        <>
-          <Link to={"/bookings"} className="button">
-            Bokningar
-          </Link>
-          <Link to={"/konto"} className="button">
-            Konto
-          </Link>
-          <Link to={"/"} className="">
+    <>
+      {isAuthenticated && (
+        <div className="header_container">
+          <div></div>
+          <div className="header_midd-section">
+            <Link to={'/'} className="button">
+              <IdCardLanyard className="header_icon" />
+              Pass
+            </Link>
+            <Link to={'/bookings'} className="button">
+              <CalendarCheck2 className="header_icon" />
+              Bokningar
+            </Link>
+            <Link to={'/konto'} className="button">
+              <User className="header_icon" />
+              Mitt konto
+            </Link>
+          </div>
+          <Link to={'/'} className="">
             <button className="button" onClick={handleLogout}>
               Logga ut
             </button>
           </Link>
-        </>
-      ) : (
-        <Link to={"/login"} className="button">
-          Logga in
-        </Link>
+        </div>
       )}
-    </div>
+    </>
   );
 };
 

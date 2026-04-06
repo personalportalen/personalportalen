@@ -20,7 +20,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<DataContext>(x =>
-    x.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnection")));
+    x.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IWorkshiftRepository, WorkshiftRepository>();
 builder.Services.AddScoped<IWorkshiftService, WorkshiftManager>();

@@ -1,0 +1,18 @@
+.complete_page{
+    height: 80vh;
+    display: grid;
+    place-items: center;
+}
+
+.complete-profile {
+  display: grid;
+  min-width: 440px;
+  max-width: 30%;
+  margin: 0 auto;
+  align-items: center;
+
+}
+
+
+
+

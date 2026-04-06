@@ -1,0 +1,31 @@
+.complete-profile form {
+  padding-top: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.complete-profile form button{
+    display: flex;
+    align-items: center;
+    gap: 0.3rem
+}
+
+.complete_input-group{
+    display: grid;
+    gap: 0.5rem;
+    padding-bottom: 0.4rem;
+}
+
+.complete_input-group div{
+    display: flex;
+    gap: 0.5rem;
+}
+
+.complete_input-group div input{
+    width: 100%;
+}
+
+.complete_icon_arrow{
+    height: 17px;
+    width: 17px;
+}

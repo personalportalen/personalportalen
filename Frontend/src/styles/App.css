@@ -4,30 +4,139 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
   text-decoration: none;
   border: none;
   background-color: transparent;
   font-size: 1rem;
 }
+
+html {
+  scrollbar-gutter: stable;
+}
+
+main {
+}
+
 h1 {
-  font-size: 3rem;
+  font-size: 32px;
+  font-weight: 600;
+  font: 'Inter', sans-serif;
 }
 
 a {
   text-decoration: underline;
   cursor: pointer;
+  color: black;
 }
 
-html {
-  background-color: #2b9e98;
-  height: 100%;
+input {
+  height: 56px;
+  border-radius: 9px;
+  background-color: white;
+  border: 1px solid #e4e4e4;
+  padding-inline: 1rem;
 }
 
-main {
-  background-color: #2b9e98;
-  padding: 1rem;
+input:active {
 }
+
+label {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* --- COMPONENTS --- */
+/* Headers */
+.first-header {
+  color: #7c7c7c;
+}
+
+/* Button */
+.button {
+  display: flex;
+  justify-content: center;
+  padding-block: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 9px;
+}
+
+.button-prim {
+  background-color: #272727;
+  color: white;
+  border: 3px solid transparent;
+}
+
+.button-alt:hover {
+  background-color: white;
+  color: #2b9e98;
+  border: 3px solid #2b9e98;
+}
+
+.button-alt {
+  background-color: #2b9e98;
+  color: white;
+  border: 3px solid transparent;
+}
+
+/* Standard form */
+.standard-form_page {
+  height: 90vh;
+  display: grid;
+  place-items: center;
+}
+
+.standard-form {
+  padding-top: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.standard-form button {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.standard-form_input-group {
+  display: grid;
+  gap: 0.5rem;
+  padding-bottom: 0.4rem;
+}
+
+.standard-form_input-group-flex {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.standard-form_input-group-flex div {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.standard-form_input-group div input {
+  width: 100%;
+}
+
+.standard-form_icon {
+  height: 16px;
+  width: 16px;
+}
+
+/* --- Utility classes --- */
+
+.input-error {
+  color: #d32f2f;
+  font-size: 0.875rem;
+  margin-top: 0.35rem;
+}
+
+input[aria-invalid='true'] {
+  border: 1px solid #d32f2f;
+}
+
+/* --- MISC --- */
 
 .header_container {
   display: flex;
@@ -149,108 +258,4 @@ main {
   padding-top: 1rem;
   display: flex;
   gap: 1rem;
-}
-
-.button {
-  display: flex;
-  justify-content: center;
-  padding-block: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  border-radius: 9px;
-}
-
-.button-prim {
-  background-color: #e6c97a;
-  color: white;
-  border: 3px solid transparent;
-}
-
-.button-alt:hover {
-  background-color: white;
-  color: #2b9e98;
-  border: 3px solid #2b9e98;
-}
-
-.button-alt {
-  background-color: #2b9e98;
-  color: white;
-  border: 3px solid transparent;
-}
-
-.complete-profile {
-  padding: 3rem 17rem;
-}
-
-.complete-profile h1 {
-  text-align: center;
-}
-
-.complete-profile form {
-  display: grid;
-  gap: 0.7rem;
-  padding-block: 1rem;
-}
-
-.complete-profile form input {
-  background-color: white;
-  padding: 0.5rem;
-  border-radius: 1rem;
-}
-
-.complete-profile button {
-  border: 1px solid black;
-  padding: 0.5rem;
-  margin-top: 1rem;
-  border-radius: 1rem;
-  cursor: pointer;
-}
-
-.complete-profile button:hover {
-  background-color: black;
-  border: 1px solid black;
-  color: white;
-}
-
-.login_page {
-  display: grid;
-  place-items: center;
-  margin-top: 10rem;
-}
-
-.login_container {
-  background-color: white;
-  padding: 5rem 4rem;
-  min-width: 40rem;
-  display: grid;
-  gap: 2rem;
-  box-shadow: 1px 1px 5px 5px #278d88;
-  border-radius: 40px;
-}
-
-.login_container form {
-  display: grid;
-  gap: 2rem;
-}
-
-.login_container form h1 {
-  text-align: center;
-}
-
-.login_container button {
-  margin-top: 1rem;
-}
-
-.login_input-group {
-  display: grid;
-  gap: 0.4rem;
-}
-
-.login_input-group input {
-  padding: 1rem;
-  border-radius: 9px;
-}
-
-.no-account_group {
-  text-align: center;
 }

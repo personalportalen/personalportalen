@@ -1,17 +1,22 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthProvider";
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthProvider';
+import './ProtectedRoute.css';
+import { ROUTES } from '../../app/routes';
+import Loader from './Loader';
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = () => {
   const { isAuthenticated, loading } = useAuth();
+  const location = useLocation();
 
-  if (loading) return <p>Laddar...</p>;
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  if (loading) {
+    if (loading) return <Loader text="Kontrollerar inloggning..." />;
   }
 
-  return children;
+  if (!isAuthenticated) {
+    return <Navigate to={ROUTES.LOGIN} replace state={{ from: location }} />;
+  }
+
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

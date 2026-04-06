@@ -1,6 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { getMe, signIn, signOut } from "../features/auth/api";
-import { getCurrentUserProfile } from "../features/profile/api";
+import { createContext, useContext, useEffect, useState } from 'react';
+import { getMe, signIn, signOut } from '../features/auth/api';
+import { getCurrentUserProfile } from '../features/profile/api';
+import { env } from '../shared/config/env';
 
 export const AuthContext = createContext();
 
@@ -15,8 +16,38 @@ export function AuthProvider({ children }) {
 
   async function checkAuth() {
     try {
+      if (env.enableDevAuthBypass) {
+        const demoUser = {
+          id: 1,
+          email: 'demo@example.com',
+          roles: ['Admin'],
+        };
+
+        const demoProfile = {
+          email: 'demo@example.com',
+          firstName: 'Rasmus',
+          lastName: 'Waleij',
+          phoneNumber: '0763941212',
+          address: {
+            id: 10,
+            street: 'Kvarntorget 11',
+            city: 'Uppsala',
+            state: 'test',
+            zipCode: '75421',
+            country: 'test',
+          },
+
+          isComplete: true,
+        };
+
+        setUser(demoUser);
+        setUserProfile(demoProfile);
+        return;
+      }
+
       const userData = await getMe();
       setUser(userData);
+
       try {
         const profileUserData = await getCurrentUserProfile();
         setUserProfile(profileUserData);
@@ -27,8 +58,9 @@ export function AuthProvider({ children }) {
     } catch (error) {
       setUser(null);
       setUserProfile(null);
+
       if (error?.status !== 401) {
-        console.error("Auth check failed", error);
+        console.error('Auth check failed', error);
       }
     } finally {
       setLoading(false);
@@ -58,7 +90,7 @@ export function AuthProvider({ children }) {
   }
 
   function isAdmin() {
-    return hasRole("Admin");
+    return hasRole('Admin');
   }
 
   const isAuthenticated = !!user;
@@ -88,7 +120,7 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used insid AuthProvider");
+    throw new Error('useAuth must be used insid AuthProvider');
   }
   return context;
 }

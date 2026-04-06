@@ -1,27 +1,27 @@
-import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../../context/AuthProvider";
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import Loader from '../../../shared/components/Loader';
+import { ROUTES } from '../../../app/routes';
+import { useAuth } from '../../../context/AuthProvider';
 
-const ProfileCompletionGuard = ({ children }) => {
-  const { loading, isAuthenticated, userProfile } = useAuth();
+const ProfileCompletionGuard = () => {
+  const { isProfileComplete, loading } = useAuth();
   const location = useLocation();
 
-  if (loading) return <p>Laddar...</p>;
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  if (loading) {
+    if (loading) return <Loader text="Kontrollerar inloggning..." />;
   }
 
-  console.log("userProfile:", userProfile);
-
-  const completionStatus = userProfile?.data?.isProfileCompleted;
-
-  const profileIncomplete = !userProfile || completionStatus === false;
-
-  if (profileIncomplete && location.pathname !== "/complete-profile") {
-    return <Navigate to="/complete-profile" replace />;
+  if (!isProfileComplete) {
+    return (
+      <Navigate
+        to={ROUTES.COMPLETE_PROFILE}
+        replace
+        state={{ from: location }}
+      />
+    );
   }
 
-  return children;
+  return <Outlet />;
 };
 
 export default ProfileCompletionGuard;

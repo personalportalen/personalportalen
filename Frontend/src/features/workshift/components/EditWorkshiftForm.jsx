@@ -1,82 +1,351 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { getWorkshift, updateWorkshift } from "../api";
+import React, { useEffect, useState } from 'react';
+import { ArrowRight } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { getWorkshift, updateWorkshift } from '../api';
+
+const formatDateTimeLocal = (dateString) => {
+  if (!dateString) return '';
+
+  const date = new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) return '';
+
+  const pad = (num) => String(num).padStart(2, '0');
+
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
 
 const EditWorkshiftForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [workshift, setWorkshift] = useState();
-  const [loading, setLoading] = useState(true);
 
-  const handleChange = async (e) => {
+  const [form, setForm] = useState({
+    area: '',
+    level: '',
+    startTime: '',
+    endTime: '',
+  });
+
+  const [errors, setErrors] = useState({
+    area: '',
+    level: '',
+    startTime: '',
+    endTime: '',
+  });
+
+  const [touched, setTouched] = useState({
+    area: false,
+    level: false,
+    startTime: false,
+    endTime: false,
+  });
+
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  const validateField = (name, value, allValues = form) => {
+    switch (name) {
+      case 'area':
+        if (!value.trim()) return 'Område är obligatoriskt';
+        if (value.trim().length < 2) return 'Område måste vara minst 2 tecken';
+        return '';
+
+      case 'level':
+        if (!value.trim()) return '';
+        if (value.trim().length < 2) return 'Nivå måste vara minst 2 tecken';
+        return '';
+
+      case 'startTime':
+        if (!value) return 'Starttid är obligatorisk';
+        return '';
+
+      case 'endTime':
+        if (!value) return 'Sluttid är obligatorisk';
+        if (
+          allValues.startTime &&
+          new Date(value) <= new Date(allValues.startTime)
+        ) {
+          return 'Sluttid måste vara efter starttid';
+        }
+        return '';
+
+      default:
+        return '';
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      area: validateField('area', form.area, form),
+      level: validateField('level', form.level, form),
+      startTime: validateField('startTime', form.startTime, form),
+      endTime: validateField('endTime', form.endTime, form),
+    };
+
+    setErrors(newErrors);
+
+    return !Object.values(newErrors).some((error) => error !== '');
+  };
+
+  useEffect(() => {
+    const fetchWorkshift = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const data = await getWorkshift(id);
+
+        const workshift = data?.data || data;
+
+        setForm({
+          area: workshift?.area || '',
+          level: workshift?.level || '',
+          startTime: formatDateTimeLocal(
+            workshift?.startTime || workshift?.starttime,
+          ),
+          endTime: formatDateTimeLocal(
+            workshift?.endTime || workshift?.endtime,
+          ),
+        });
+      } catch (err) {
+        console.error('Could not load workshift', err);
+        setError(
+          err?.response?.data?.message ||
+            err.message ||
+            'Kunde inte hämta arbetspasset',
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchWorkshift();
+    }
+  }, [id]);
+
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setWorkshift((prevState) => ({ ...prevState, [name]: value }));
+
+    if (error) {
+      setError('');
+    }
+
+    setForm((prev) => {
+      const updated = {
+        ...prev,
+        [name]: value,
+      };
+
+      if (touched[name]) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: validateField(name, value, updated),
+          ...(name === 'startTime' || name === 'endTime'
+            ? {
+                endTime: validateField('endTime', updated.endTime, updated),
+              }
+            : {}),
+        }));
+      }
+
+      return updated;
+    });
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+
+    setTouched((prev) => ({
+      ...prev,
+      [name]: true,
+    }));
+
+    if (name === 'area' || name === 'level') {
+      const trimmedValue = value.trim();
+
+      setForm((prev) => {
+        const updated = {
+          ...prev,
+          [name]: trimmedValue,
+        };
+
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: validateField(name, trimmedValue, updated),
+          ...(name === 'startTime' || name === 'endTime'
+            ? {
+                endTime: validateField('endTime', updated.endTime, updated),
+              }
+            : {}),
+        }));
+
+        return updated;
+      });
+    } else {
+      const updated = {
+        ...form,
+        [name]: value,
+      };
+
+      setErrors((prev) => ({
+        ...prev,
+        [name]: validateField(name, value, updated),
+        ...(name === 'startTime' || name === 'endTime'
+          ? {
+              endTime: validateField('endTime', updated.endTime, updated),
+            }
+          : {}),
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await updateWorkshift(workshift, id);
-    navigate("/");
+    setError(null);
+
+    setTouched({
+      area: true,
+      level: true,
+      startTime: true,
+      endTime: true,
+    });
+
+    const isValid = validateForm();
+
+    if (!isValid) return;
+
+    try {
+      setSaving(true);
+
+      const cleanedForm = {
+        ...form,
+        area: form.area.trim(),
+        level: form.level.trim(),
+      };
+
+      await updateWorkshift(id, cleanedForm);
+
+      navigate('/', { replace: true });
+    } catch (err) {
+      console.error('Workshift could not be updated', err);
+      setError(
+        err?.response?.data?.message ||
+          err.message ||
+          'Kunde inte uppdatera arbetspasset',
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
-  useEffect(() => {
-    async function getWorkshiftData() {
-      const workshiftData = await getWorkshift(id);
-      console.log("workshiftData", workshiftData);
-      setWorkshift(workshiftData);
-      setLoading(false);
-    }
-    getWorkshiftData();
-  }, []);
-
   if (loading) {
-    return;
+    return <p>Laddar arbetspass...</p>;
   }
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} noValidate>
       <h1>Uppdatera arbetspass</h1>
+
       <div className="ew_input-group">
-        <label>area</label>
+        <label htmlFor="area">Område</label>
         <input
-          value={workshift.area}
+          id="area"
+          value={form.area}
           name="area"
           type="text"
-          placeholder="area"
+          placeholder="Område"
           onChange={handleChange}
+          onBlur={handleBlur}
+          disabled={saving}
+          required
+          maxLength={100}
+          aria-invalid={!!errors.area}
+          aria-describedby={errors.area ? 'area-error' : undefined}
         />
+        {touched.area && errors.area && (
+          <p id="area-error" className="input-error">
+            {errors.area}
+          </p>
+        )}
       </div>
+
       <div className="ew_input-group">
-        <label>level</label>
+        <label htmlFor="level">Nivå</label>
         <input
-          value={workshift.level}
+          id="level"
+          value={form.level}
           name="level"
           type="text"
-          placeholder="level"
+          placeholder="Nivå"
           onChange={handleChange}
+          onBlur={handleBlur}
+          disabled={saving}
+          maxLength={100}
+          aria-invalid={!!errors.level}
+          aria-describedby={errors.level ? 'level-error' : undefined}
         />
+        {touched.level && errors.level && (
+          <p id="level-error" className="input-error">
+            {errors.level}
+          </p>
+        )}
       </div>
+
       <div className="ew_input-group">
-        <label>starttime</label>
+        <label htmlFor="start-time">Starttid</label>
         <input
-          value={workshift.starttime}
-          name="starttime"
-          type="text"
-          placeholder="starttime"
+          id="start-time"
+          value={form.startTime}
+          name="startTime"
+          type="datetime-local"
           onChange={handleChange}
+          onBlur={handleBlur}
+          disabled={saving}
+          required
+          aria-invalid={!!errors.startTime}
+          aria-describedby={errors.startTime ? 'start-time-error' : undefined}
         />
+        {touched.startTime && errors.startTime && (
+          <p id="start-time-error" className="input-error">
+            {errors.startTime}
+          </p>
+        )}
       </div>
+
       <div className="ew_input-group">
-        <label>endtime</label>
+        <label htmlFor="end-time">Sluttid</label>
         <input
-          value={workshift.endtime}
-          name="endtime"
-          type="text"
-          placeholder="endtime"
+          id="end-time"
+          value={form.endTime}
+          name="endTime"
+          type="datetime-local"
           onChange={handleChange}
+          onBlur={handleBlur}
+          disabled={saving}
+          required
+          aria-invalid={!!errors.endTime}
+          aria-describedby={errors.endTime ? 'end-time-error' : undefined}
         />
+        {touched.endTime && errors.endTime && (
+          <p id="end-time-error" className="input-error">
+            {errors.endTime}
+          </p>
+        )}
       </div>
-      <button type="submit" className="button button-alt">
-        Spara ändringar
+
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      <button type="submit" className="button button-alt" disabled={saving}>
+        {saving ? 'Sparar...' : 'Spara ändringar'}
+        {!saving && <ArrowRight className="complete_icon_arrow" />}
       </button>
     </form>
   );

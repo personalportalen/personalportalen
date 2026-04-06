@@ -1,32 +1,32 @@
-import { API_ENDPOINTS } from "../../services/config";
-import { apiFetch } from "../../services/apiClient";
+import { apiFetch } from '../../services/apiClient';
+import { API_ENDPOINTS } from '../../shared/config/api';
 
 export const getWorkshifts = () => {
-  return apiFetch(API_ENDPOINTS.workshift, "getall");
+  return apiFetch(API_ENDPOINTS.workshift, 'getall');
 };
 
 export const getWorkshift = (workshiftId) => {
-  console.log("workshiftId", workshiftId);
+  console.log('workshiftId', workshiftId);
   return apiFetch(API_ENDPOINTS.workshift, workshiftId);
 };
 
 export const createWorkshift = (payload) => {
-  return apiFetch(API_ENDPOINTS.workshift, "create", {
-    method: "POST",
+  return apiFetch(API_ENDPOINTS.workshift, 'create', {
+    method: 'POST',
     body: JSON.stringify(payload),
   });
 };
 
 export const updateWorkshift = (payload, id) => {
-  console.log("id", id);
+  console.log('id', id);
   return apiFetch(API_ENDPOINTS.workshift, id, {
-    method: "PUT",
+    method: 'PUT',
     body: JSON.stringify(payload),
   });
 };
 
 export const deleteWorkshift = (id) => {
   return apiFetch(API_ENDPOINTS.workshift, `${id}`, {
-    method: "DELETE",
+    method: 'DELETE',
   });
 };
