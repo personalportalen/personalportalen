@@ -12,11 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-<<<<<<<< HEAD:BookingService/Data/Migrations/20260331144514_Init.Designer.cs
-    [Migration("20260331144514_Init")]
-========
-    [Migration("20260402130525_Init")]
->>>>>>>> e9d30f08ec315879678ffc89cce809f078be9c93:BookingService/Data/Migrations/20260402130525_Init.Designer.cs
+    [Migration("20260406192620_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -29,36 +25,38 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.BookingEntity", b =>
+            modelBuilder.Entity("Domain.Entities.WorkshiftEntity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("BookingCreated")
+                    b.Property<string>("AddedByUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AddedTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("BookingMadeById")
+                    b.Property<string>("Area")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmployeeId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("LastUpdated")
+                    b.Property<DateTime>("Endtime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LastUpdatedById")
+                    b.Property<string>("Level")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("WorkshiftId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Starttime")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Workshifts");
                 });
 #pragma warning restore 612, 618
         }

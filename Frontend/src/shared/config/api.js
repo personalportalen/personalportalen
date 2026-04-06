@@ -1,6 +1,5 @@
-const LOCALHOST_DOMAIN = "https://localhost:";
-const GATEWAY_PORT = "7265";
-export { BASE_URL };
+const LOCALHOST_DOMAIN = 'https://localhost:';
+const GATEWAY_PORT = '7265';
 export const BASE_URL = `${LOCALHOST_DOMAIN}${GATEWAY_PORT}`;
 
 export const API_ENDPOINTS = {

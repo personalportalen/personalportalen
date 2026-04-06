@@ -5,10 +5,10 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sqlserver-dev
     env_file:
-      - .env.example
+      - .env
     environment:
       ACCEPT_EULA: "Y"
-      SA_PASSWORD: ${SQL_PASSWORD}
+      SA_PASSWORD: "Mandelmassa123!"
     ports:
       - "1433:1433"
     volumes:

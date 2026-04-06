@@ -158,7 +158,6 @@ const SignupForm = () => {
     if (!isValid) return;
 
     try {
-      console.log("form:", form);
       setLoading(true);
 
       const cleanedCredentials = {

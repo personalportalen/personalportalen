@@ -179,7 +179,7 @@ app.Use(async (context, next) =>
 
 app.MapReverseProxy();
 
-app.Run("http://localhost:7265");
+app.Run("https://localhost:7265");
 
 //Console.WriteLine("🚀 GATEWAY BUILD STARTED - TEST BUILD 123");
 
