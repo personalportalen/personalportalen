@@ -1,5 +1,4 @@
-import '../styles/App.css';
-import Header from '../shared/components/Header';
+import './App.css';
 import AppRoutes from './AppRoutes';
 
 function App() {

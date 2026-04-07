@@ -1,0 +1,14 @@
+/* /src/shared/styles/ */
+@import '../shared/styles/reset.css';
+@import '../shared/styles/base.css';
+@import '../shared/styles/forms.css';
+@import '../shared/styles/layout.css';
+@import '../shared/styles/utilities.css';
+@import '../shared/styles/variables.css';
+
+/* /src/shared/components */
+@import '../shared/components/Button.css';
+@import '../shared/components/Header.css';
+@import '../shared/components/CustomLoader.css';
+@import '../shared/components/ProtectedRoute.css';
+@import '../shared/pages/NotFoundPage.css';

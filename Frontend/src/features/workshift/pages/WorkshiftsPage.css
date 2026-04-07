@@ -1,0 +1,37 @@
+.home_container {
+  width: 100%;
+}
+
+.home_container h1 {
+  font-size: 2rem;
+}
+
+.home_content-container {
+  padding-top: 1rem;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.workshifts_page-header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.home_add-workshift {
+  border: 1px solid #e4e4e4;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  padding-inline: 0.5rem;
+  text-decoration: none;
+}
+
+.home_add-workshift p {
+  color: black;
+  font-size: 2rem;
+  font-weight: 100;
+  padding-inline: 0.5rem;
+}

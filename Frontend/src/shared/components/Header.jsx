@@ -25,20 +25,20 @@ const Header = () => {
         <div className="header_container">
           <div></div>
           <div className="header_midd-section">
-            <Link to={'/'} className="button">
+            <Link to={'/'}>
               <IdCardLanyard className="header_icon" />
               Pass
             </Link>
-            <Link to={'/bookings'} className="button">
+            <Link to={'/bookings'}>
               <CalendarCheck2 className="header_icon" />
               Bokningar
             </Link>
-            <Link to={'/konto'} className="button">
+            <Link to={'/konto'}>
               <User className="header_icon" />
               Mitt konto
             </Link>
           </div>
-          <Link to={'/'} className="">
+          <Link to={'/'} className="header__right-secion">
             <button className="button" onClick={handleLogout}>
               Logga ut
             </button>

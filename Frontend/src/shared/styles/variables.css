@@ -1,0 +1,28 @@
+:root {
+  --font-body: 'Roboto', sans-serif;
+  --font-heading: 'Inter', sans-serif;
+
+  --color-text: #272727;
+  --color-muted: #7c7c7c;
+  --color-border: #e4e4e4;
+  --color-background: #f5f5f5;
+  --color-surface: #ffffff;
+  --color-primary: #272727;
+  --color-secondary: #2b9e98;
+  --color-error: #d32f2f;
+
+  --radius-sm: 8px;
+  --radius-md: 9px;
+  --radius-lg: 16px;
+
+  --container-width: 700px;
+  --container-narrow: 700px;
+
+  --header-height: 80px;
+
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+}

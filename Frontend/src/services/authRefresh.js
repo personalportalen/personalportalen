@@ -1,14 +1,34 @@
 import { API_ENDPOINTS } from '../shared/config/api.js';
 
-export async function tryRefreshToken() {
-  const refreshRes = await fetch(`${API_ENDPOINTS.auth}/refresh-token`, {
-    method: 'POST',
-    credentials: 'include',
-  });
+const isDev = import.meta.env.DEV;
 
-  if (!refreshRes.ok) {
-    throw new Error('Session expired');
+function logInfo(...args) {
+  if (isDev) console.info(...args);
+}
+
+export async function tryRefreshToken({ suppressLog = false } = {}) {
+  try {
+    const refreshRes = await fetch(`${API_ENDPOINTS.auth}/refresh-token`, {
+      method: 'POST',
+      credentials: 'include',
+    });
+
+    if (!refreshRes.ok) {
+      if (!suppressLog) {
+        logInfo('[Auth] Refresh token failed - no active session');
+      }
+      return false;
+    }
+
+    if (!suppressLog) {
+      logInfo('[Auth] Token refreshed successfully');
+    }
+
+    return true;
+  } catch (error) {
+    if (!suppressLog) {
+      logInfo('[Auth] Refresh request failed');
+    }
+    return false;
   }
-
-  await new Promise((resolve) => setTimeout(resolve, 50));
 }

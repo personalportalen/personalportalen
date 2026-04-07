@@ -1,0 +1,24 @@
+.flex {
+  display: flex;
+}
+
+.grid {
+  display: grid;
+}
+
+.hidden {
+  display: none;
+}
+
+.text-muted {
+  color: var(--color-muted);
+}
+
+.w-full {
+  width: 100%;
+}
+
+.center {
+  display: grid;
+  place-items: center;
+}

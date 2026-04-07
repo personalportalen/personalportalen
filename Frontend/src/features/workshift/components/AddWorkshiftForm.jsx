@@ -242,47 +242,48 @@ const AddWorkshiftForm = () => {
 
         <div className="standard-form_input-group-flex">
           <div className="standard-form_input-group">
-            <label htmlFor="start-time">Starttid</label>
-            <input
-              id="start-time"
-              name="startTime"
-              type="datetime-local"
-              value={form.startTime}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              disabled={loading}
-              required
-              aria-invalid={!!errors.startTime}
-              aria-describedby={
-                errors.startTime ? 'start-time-error' : undefined
-              }
-            />
-            {touched.startTime && errors.startTime && (
-              <p id="start-time-error" className="input-error">
-                {errors.startTime}
-              </p>
-            )}
-          </div>
-
-          <div className="standard-form_input-group">
-            <label htmlFor="end-time">Sluttid</label>
-            <input
-              id="end-time"
-              name="endTime"
-              type="datetime-local"
-              value={form.endTime}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              disabled={loading}
-              required
-              aria-invalid={!!errors.endTime}
-              aria-describedby={errors.endTime ? 'end-time-error' : undefined}
-            />
-            {touched.endTime && errors.endTime && (
-              <p id="end-time-error" className="input-error">
-                {errors.endTime}
-              </p>
-            )}
+            <div>
+              <label htmlFor="start-time">Starttid</label>
+              <input
+                id="start-time"
+                name="startTime"
+                type="datetime-local"
+                value={form.startTime}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={loading}
+                required
+                aria-invalid={!!errors.startTime}
+                aria-describedby={
+                  errors.startTime ? 'start-time-error' : undefined
+                }
+              />
+              {touched.startTime && errors.startTime && (
+                <p id="start-time-error" className="input-error">
+                  {errors.startTime}
+                </p>
+              )}
+            </div>
+            <div>
+              <label htmlFor="end-time">Sluttid</label>
+              <input
+                id="end-time"
+                name="endTime"
+                type="datetime-local"
+                value={form.endTime}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                disabled={loading}
+                required
+                aria-invalid={!!errors.endTime}
+                aria-describedby={errors.endTime ? 'end-time-error' : undefined}
+              />
+              {touched.endTime && errors.endTime && (
+                <p id="end-time-error" className="input-error">
+                  {errors.endTime}
+                </p>
+              )}
+            </div>
           </div>
         </div>
 

@@ -251,10 +251,10 @@ const EditWorkshiftForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form onSubmit={handleSubmit} noValidate className="standard-form">
       <h1>Uppdatera arbetspass</h1>
 
-      <div className="ew_input-group">
+      <div className="standard-form_input-group">
         <label htmlFor="area">Område</label>
         <input
           id="area"
@@ -277,7 +277,7 @@ const EditWorkshiftForm = () => {
         )}
       </div>
 
-      <div className="ew_input-group">
+      <div className="standard-form_input-group">
         <label htmlFor="level">Nivå</label>
         <input
           id="level"
@@ -299,51 +299,55 @@ const EditWorkshiftForm = () => {
         )}
       </div>
 
-      <div className="ew_input-group">
-        <label htmlFor="start-time">Starttid</label>
-        <input
-          id="start-time"
-          value={form.startTime}
-          name="startTime"
-          type="datetime-local"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          disabled={saving}
-          required
-          aria-invalid={!!errors.startTime}
-          aria-describedby={errors.startTime ? 'start-time-error' : undefined}
-        />
-        {touched.startTime && errors.startTime && (
-          <p id="start-time-error" className="input-error">
-            {errors.startTime}
-          </p>
-        )}
-      </div>
-
-      <div className="ew_input-group">
-        <label htmlFor="end-time">Sluttid</label>
-        <input
-          id="end-time"
-          value={form.endTime}
-          name="endTime"
-          type="datetime-local"
-          onChange={handleChange}
-          onBlur={handleBlur}
-          disabled={saving}
-          required
-          aria-invalid={!!errors.endTime}
-          aria-describedby={errors.endTime ? 'end-time-error' : undefined}
-        />
-        {touched.endTime && errors.endTime && (
-          <p id="end-time-error" className="input-error">
-            {errors.endTime}
-          </p>
-        )}
+      <div className="standard-form_input-group-flex">
+        <div>
+          <div>
+            <label htmlFor="start-time">Starttid</label>
+            <input
+              id="start-time"
+              value={form.startTime}
+              name="startTime"
+              type="datetime-local"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              disabled={saving}
+              required
+              aria-invalid={!!errors.startTime}
+              aria-describedby={
+                errors.startTime ? 'start-time-error' : undefined
+              }
+            />
+            {touched.startTime && errors.startTime && (
+              <p id="start-time-error" className="input-error">
+                {errors.startTime}
+              </p>
+            )}
+          </div>
+          <div>
+            <label htmlFor="end-time">Sluttid</label>
+            <input
+              id="end-time"
+              value={form.endTime}
+              name="endTime"
+              type="datetime-local"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              disabled={saving}
+              required
+              aria-invalid={!!errors.endTime}
+              aria-describedby={errors.endTime ? 'end-time-error' : undefined}
+            />
+            {touched.endTime && errors.endTime && (
+              <p id="end-time-error" className="input-error">
+                {errors.endTime}
+              </p>
+            )}
+          </div>
+        </div>
       </div>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      <button type="submit" className="button button-alt" disabled={saving}>
+      <button type="submit" className="button button-prim" disabled={saving}>
         {saving ? 'Sparar...' : 'Spara ändringar'}
         {!saving && <ArrowRight className="complete_icon_arrow" />}
       </button>

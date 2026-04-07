@@ -2,14 +2,14 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthProvider';
 import './ProtectedRoute.css';
 import { ROUTES } from '../../app/routes';
-import Loader from './Loader';
+import CustomLoader from './CustomLoader';
 
 const ProtectedRoute = () => {
   const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
-    if (loading) return <Loader text="Kontrollerar inloggning..." />;
+    if (loading) return <CustomLoader text="Kontrollerar inloggning..." />;
   }
 
   if (!isAuthenticated) {

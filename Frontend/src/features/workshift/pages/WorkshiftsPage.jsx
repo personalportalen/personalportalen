@@ -1,12 +1,23 @@
-import React, { useEffect, useState } from "react";
-import WorkshiftCard from "../components/WorkshiftCard";
-import { Link } from "react-router-dom";
-import { useAuth } from "../../../context/AuthProvider";
-import { getWorkshifts } from "../api";
+import React, { useEffect, useState } from 'react';
+import './WorkshiftsPage.css';
+import WorkshiftCard from '../components/WorkshiftCard';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthProvider';
+import { deleteWorkshift, getWorkshifts } from '../api';
 
 const WorkshiftsPage = () => {
   const [workshifts, setWorkshifts] = useState([]);
-  const { isAuthenticated, hasAnyRole } = useAuth();
+  const { hasAnyRole } = useAuth();
+
+  const handleDeleteWorkshift = async (id) => {
+    try {
+      await deleteWorkshift(id);
+
+      setWorkshifts((prev) => prev.filter((workshift) => workshift.id !== id));
+    } catch (err) {
+      console.error('Delete failed', err);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,16 +34,21 @@ const WorkshiftsPage = () => {
 
   return (
     <div className="home_container">
-      <h1>Lediga pass att boka</h1>
-      <div className="home_content-container">
-        {hasAnyRole(["Admin", "Passledare"]) && (
-          <Link to={"/add"} className="home_add-workshift">
+      <div className="workshifts_page-header-container">
+        <h1>Lediga pass</h1>
+        {hasAnyRole(['Admin', 'Passledare']) && (
+          <Link to={'/add'} className="home_add-workshift">
             <p>+</p>
           </Link>
         )}
-
+      </div>
+      <div className="home_content-container">
         {workshifts.map((workshift) => (
-          <WorkshiftCard key={workshift.id} workshift={workshift} />
+          <WorkshiftCard
+            key={workshift.id}
+            workshift={workshift}
+            onDelete={handleDeleteWorkshift}
+          />
         ))}
       </div>
     </div>

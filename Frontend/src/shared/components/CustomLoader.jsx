@@ -1,6 +1,6 @@
-import './Loader.css';
+import './CustomLoader.css';
 
-const Loader = ({ text = 'Laddar...' }) => {
+const CustomLoader = ({ text = 'Laddar...' }) => {
   return (
     <div className="loader-container">
       <div className="loader-spinner"></div>
@@ -9,4 +9,4 @@ const Loader = ({ text = 'Laddar...' }) => {
   );
 };
 
-export default Loader;
+export default CustomLoader;

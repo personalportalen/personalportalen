@@ -7,7 +7,9 @@ import { useAuth } from '../../../context/AuthProvider';
 
 const CompleteProfileForm = () => {
   const navigate = useNavigate();
-  const { userProfile, refresh } = useAuth();
+  const { userProfile, setUserProfile, refreshProfile } = useAuth();
+
+  console.log('userProfile', userProfile);
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -211,11 +213,24 @@ const CompleteProfileForm = () => {
         },
       };
 
-      console.log('form: ', cleanedForm);
+      console.log('form:', cleanedForm);
 
       await completeProfile(cleanedForm);
-      await refresh();
-      navigate('/konto');
+
+      setUserProfile((prev) => ({
+        ...prev,
+        data: {
+          ...prev?.data,
+          ...cleanedForm,
+          isProfileCompleted: true,
+        },
+      }));
+
+      navigate('/bookings', { replace: true });
+
+      refreshProfile().catch((err) => {
+        console.error('Background profile refresh failed', err);
+      });
     } catch (err) {
       console.error('Completion of profile failed', err);
       setError(err?.response?.data?.message || err.message || 'Något gick fel');

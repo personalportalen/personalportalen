@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { getMe, signIn, signOut } from '../features/auth/api';
 import { getCurrentUserProfile } from '../features/profile/api';
 import { env } from '../shared/config/env';
@@ -7,14 +7,20 @@ export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [userProfile, setUserProfile] = useState(null);
 
+  const [authLoading, setAuthLoading] = useState(true);
+  const [profileLoading, setProfileLoading] = useState(true);
+  const [profileRefreshing, setProfileRefreshing] = useState(false);
+
   useEffect(() => {
-    checkAuth();
+    initializeAuth();
   }, []);
 
-  async function checkAuth() {
+  async function initializeAuth() {
+    setAuthLoading(true);
+    setProfileLoading(true);
+
     try {
       if (env.enableDevAuthBypass) {
         const demoUser = {
@@ -24,20 +30,24 @@ export function AuthProvider({ children }) {
         };
 
         const demoProfile = {
-          email: 'demo@example.com',
-          firstName: 'Rasmus',
-          lastName: 'Waleij',
-          phoneNumber: '0763941212',
-          address: {
-            id: 10,
-            street: 'Kvarntorget 11',
-            city: 'Uppsala',
-            state: 'test',
-            zipCode: '75421',
-            country: 'test',
+          succeeded: true,
+          message: 'Success',
+          statusCode: 200,
+          data: {
+            email: 'demo@example.com',
+            firstName: 'Rasmus',
+            lastName: 'Waleij',
+            phoneNumber: '0763941212',
+            address: {
+              id: 10,
+              street: 'Kvarntorget 11',
+              city: 'Uppsala',
+              state: 'test',
+              zipCode: '75421',
+              country: 'test',
+            },
+            isProfileCompleted: true,
           },
-
-          isComplete: true,
         };
 
         setUser(demoUser);
@@ -49,10 +59,10 @@ export function AuthProvider({ children }) {
       setUser(userData);
 
       try {
-        const profileUserData = await getCurrentUserProfile();
-        setUserProfile(profileUserData);
+        const profileData = await getCurrentUserProfile();
+        setUserProfile(profileData);
       } catch (err) {
-        console.error(err);
+        console.error('Failed to fetch profile', err);
         setUserProfile(null);
       }
     } catch (error) {
@@ -63,13 +73,34 @@ export function AuthProvider({ children }) {
         console.error('Auth check failed', error);
       }
     } finally {
-      setLoading(false);
+      setAuthLoading(false);
+      setProfileLoading(false);
     }
+  }
+
+  async function refreshProfile() {
+    setProfileRefreshing(true);
+
+    try {
+      const profileData = await getCurrentUserProfile();
+      setUserProfile(profileData);
+      return profileData;
+    } catch (err) {
+      console.error('Failed to refresh profile', err);
+      setUserProfile(null);
+      throw err;
+    } finally {
+      setProfileRefreshing(false);
+    }
+  }
+
+  async function refreshAuth() {
+    await initializeAuth();
   }
 
   async function login(email, password) {
     await signIn(email, password);
-    return await checkAuth();
+    await initializeAuth();
   }
 
   async function logout() {
@@ -78,6 +109,9 @@ export function AuthProvider({ children }) {
     } finally {
       setUser(null);
       setUserProfile(null);
+      setAuthLoading(false);
+      setProfileLoading(false);
+      setProfileRefreshing(false);
     }
   }
 
@@ -95,32 +129,61 @@ export function AuthProvider({ children }) {
 
   const isAuthenticated = !!user;
   const hasProfile = !!userProfile;
-  const isProfileComplete = !!userProfile?.isComplete;
+  const isProfileComplete = userProfile?.data?.isProfileCompleted === true;
 
-  const value = {
-    user,
-    userProfile,
-    setUserProfile,
-    roles: user?.roles || [],
-    isAuthenticated,
-    hasProfile,
-    isProfileComplete,
-    loading,
-    login,
-    logout,
-    refresh: checkAuth,
-    hasRole,
-    hasAnyRole,
-    isAdmin,
-  };
+  // Viktigt för guards:
+  const isReadyForGuards =
+    !authLoading && !profileLoading && !profileRefreshing;
+
+  const value = useMemo(
+    () => ({
+      user,
+      userProfile,
+      setUserProfile,
+
+      roles: user?.roles || [],
+
+      authLoading,
+      profileLoading,
+      profileRefreshing,
+      loading: authLoading || profileLoading || profileRefreshing,
+
+      isAuthenticated,
+      hasProfile,
+      isProfileComplete,
+      isReadyForGuards,
+
+      login,
+      logout,
+      refreshAuth,
+      refreshProfile,
+
+      hasRole,
+      hasAnyRole,
+      isAdmin,
+    }),
+    [
+      user,
+      userProfile,
+      authLoading,
+      profileLoading,
+      profileRefreshing,
+      isAuthenticated,
+      hasProfile,
+      isProfileComplete,
+      isReadyForGuards,
+    ],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
+
   if (!context) {
-    throw new Error('useAuth must be used insid AuthProvider');
+    throw new Error('useAuth must be used inside AuthProvider');
   }
+
   return context;
 }

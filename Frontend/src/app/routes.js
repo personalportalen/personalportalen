@@ -7,4 +7,5 @@ export const ROUTES = {
   BOOKINGS: '/bookings',
   ADD_WORKSHIFT: '/add',
   EDIT_WORKSHIFT: '/edit/:id',
+  DETAILS_WORKSHIFT: '/details/:id',
 };

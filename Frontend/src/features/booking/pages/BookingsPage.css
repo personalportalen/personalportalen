@@ -1,0 +1,5 @@
+.bookings_map_conatiner {
+  padding-top: 1rem;
+  display: grid;
+  gap: 1rem;
+}

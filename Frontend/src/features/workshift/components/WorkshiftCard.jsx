@@ -1,97 +1,95 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../../context/AuthProvider";
-import { deleteWorkshift } from "../api";
-import { createBooking } from "../../booking/api";
+import './WorkshiftCard.css';
+import { useState } from 'react';
+import { useAuth } from '../../../context/AuthProvider';
+import { deleteWorkshift } from '../api';
+import { createBooking } from '../../booking/api';
+import { ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-const WorkshiftCard = ({ workshift }) => {
+const WorkshiftCard = ({ workshift, onDelete }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const { isAuthenticated, hasRole } = useAuth();
-  const navigate = useNavigate();
 
-  const handleClickDelete = async () => {
-    try {
-      await deleteWorkshift(workshift.id);
-      // ev. refresh / navigate
-    } catch (err) {
-      console.error("Delete failed", err);
-    }
+  const formatTime = (time) => time?.slice(11, 16).replace(':', '.');
+  const formatDate = (date) => {
+    if (!date) return '';
+
+    const d = new Date(date);
+    return `${d.getDate()}/${d.getMonth() + 1}`;
   };
 
-  const handleClickBook = async () => {
+  const handleToggle = () => {
+    setIsOpen((prev) => !prev);
+  };
+
+  const handleBook = async () => {
     try {
-      const payload = {
-        workshiftId: workshift.id,
-      };
-
-      console.log("payload", payload);
-
-      await createBooking(payload);
+      await createBooking({ workshiftId: workshift.id });
     } catch (err) {
-      console.error("Booking failed", err);
+      console.error(err);
     }
   };
 
   return (
-    <div className="wc_container">
-      <div className="wc_info-group">
-        <label>Id</label>
-        <p>{workshift.id}</p>
+    <div className={`wc_container ${isOpen ? 'open' : ''}`}>
+      <div className="wc_header" onClick={handleToggle}>
+        <div className="wc_info-group">
+          <p>{formatDate(workshift.starttime)}</p>
+        </div>
+        <div className="wc_info-group-flex">
+          <p>{formatTime(workshift.starttime)}</p>
+          <p>-</p>
+          <p>{formatTime(workshift.endtime)}</p>
+        </div>
+
+        <div className="wc_info-group">
+          <label>Område</label>
+          <p>{workshift.area}</p>
+        </div>
+
+        <div className="wc_info-group">
+          <label>Nivå</label>
+          <p>{workshift.level}</p>
+        </div>
+        <div className="wc__chevron">
+          <ChevronDown className={isOpen ? 'rotate' : ''} />
+        </div>
       </div>
 
-      <div className="wc_info-group">
-        <label>Område</label>
-        <p>{workshift.area}</p>
-      </div>
+      {isOpen && (
+        <div className="wc_details">
+          <div className="wc_info-group">
+            <label>{workshift.level}</label>
+            <p>{workshift.employeeId || 'Ej tilldelad'}</p>
+          </div>
 
-      <div className="wc_info-group">
-        <label>Nivå</label>
-        <p>{workshift.level}</p>
-      </div>
+          <div className="wc_button-container">
+            {isAuthenticated && hasRole('Admin') && (
+              <>
+                <Link
+                  to={`./edit/${workshift.id}`}
+                  state={{ initialWorkshift: workshift }}
+                  className="button button-prim"
+                >
+                  Ändra
+                </Link>
+                <button
+                  onClick={() => onDelete(workshift.id)}
+                  className="button button-alt"
+                >
+                  Radera
+                </button>
+              </>
+            )}
 
-      <div className="wc_info-group">
-        <label>Starttid</label>
-        <p>{workshift.startTime}</p>
-      </div>
-
-      <div className="wc_info-group">
-        <label>Sluttid</label>
-        <p>{workshift.endTime}</p>
-      </div>
-
-      <div className="wc_info-group">
-        <label>Arbetare</label>
-        <p>{workshift.employeeId}</p>
-      </div>
-
-      <div className="wc_info-group">
-        <label>Skapad av</label>
-        <p>{workshift.addedByUserId}</p>
-      </div>
-
-      <div className="wc_info-group">
-        <label>Skapad</label>
-        <p>{workshift.addedTime}</p>
-      </div>
-
-      <div className="wc_button-container">
-        {isAuthenticated && hasRole("Admin") && (
-          <>
-            <Link to={`/edit/${workshift.id}`} className="button button-prim">
-              Ändra
-            </Link>
-
-            <button onClick={handleClickDelete} className="button button-alt">
-              Radera
-            </button>
-          </>
-        )}
-
-        {isAuthenticated && !hasRole("Admin") && (
-          <button onClick={handleClickBook} className="button button-alt">
-            Boka
-          </button>
-        )}
-      </div>
+            {isAuthenticated && !hasRole('Admin') && (
+              <button onClick={handleBook} className="button button-prim">
+                Boka
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

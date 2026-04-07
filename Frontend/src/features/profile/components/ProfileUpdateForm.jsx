@@ -294,53 +294,61 @@ const ProfileUpdateForm = () => {
           placeholder="Email"
           value={profile?.email || ''}
           autoComplete="email"
+          className="input"
         />
       </div>
 
       <div className="standard-form_input-group-flex">
         <label htmlFor="first-name">Namn</label>
         <div>
-          <input
-            id="first-name"
-            type="text"
-            name="firstName"
-            placeholder="Förnamn"
-            autoComplete="given-name"
-            disabled={loading}
-            value={form.firstName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            required
-            maxLength={50}
-            aria-invalid={!!errors.firstName}
-            aria-describedby={errors.firstName ? 'first-name-error' : undefined}
-          />
-          {touched.firstName && errors.firstName && (
-            <p id="first-name-error" className="input-error">
-              {errors.firstName}
-            </p>
-          )}
-
-          <input
-            id="last-name"
-            type="text"
-            name="lastName"
-            placeholder="Efternamn"
-            autoComplete="family-name"
-            disabled={loading}
-            value={form.lastName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            required
-            maxLength={50}
-            aria-invalid={!!errors.lastName}
-            aria-describedby={errors.lastName ? 'last-name-error' : undefined}
-          />
-          {touched.lastName && errors.lastName && (
-            <p id="last-name-error" className="input-error">
-              {errors.lastName}
-            </p>
-          )}
+          <div>
+            <input
+              id="first-name"
+              className="input"
+              type="text"
+              name="firstName"
+              placeholder="Förnamn"
+              autoComplete="given-name"
+              disabled={loading}
+              value={form.firstName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              required
+              maxLength={50}
+              aria-invalid={!!errors.firstName}
+              aria-describedby={
+                errors.firstName ? 'first-name-error' : undefined
+              }
+            />
+            {touched.firstName && errors.firstName && (
+              <p id="first-name-error" className="input-error">
+                {errors.firstName}
+              </p>
+            )}
+          </div>
+          <div>
+            <input
+              id="last-name"
+              className="input"
+              type="text"
+              name="lastName"
+              placeholder="Efternamn"
+              autoComplete="family-name"
+              disabled={loading}
+              value={form.lastName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              required
+              maxLength={50}
+              aria-invalid={!!errors.lastName}
+              aria-describedby={errors.lastName ? 'last-name-error' : undefined}
+            />
+            {touched.lastName && errors.lastName && (
+              <p id="last-name-error" className="input-error">
+                {errors.lastName}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
@@ -348,6 +356,7 @@ const ProfileUpdateForm = () => {
         <label htmlFor="phone-number">Telefon</label>
         <input
           id="phone-number"
+          className="input"
           type="tel"
           name="phoneNumber"
           placeholder="Telefonnummer"
@@ -374,6 +383,7 @@ const ProfileUpdateForm = () => {
 
         <input
           id="street"
+          className="input"
           type="text"
           name="street"
           placeholder="Gata"
@@ -395,6 +405,7 @@ const ProfileUpdateForm = () => {
           <div>
             <input
               id="zip-code"
+              className="input"
               type="text"
               name="zipCode"
               placeholder="Postnummer"
@@ -417,6 +428,7 @@ const ProfileUpdateForm = () => {
           <div>
             <input
               id="city"
+              className="input"
               type="text"
               name="city"
               placeholder="Stad"

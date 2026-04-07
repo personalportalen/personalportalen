@@ -13,13 +13,15 @@ import AccountPage from '../features/profile/pages/AccountPage';
 import ProtectedRoute from '../shared/components/ProtectedRoute';
 import DesignSandbox from '../../DesignSandbox';
 import NotFoundPage from '../shared/pages/NotFoundPage';
-import ProtectedProfileRoute from '../shared/components/ProtectedProfileRoute';
-import Loader from '../shared/components/Loader';
-import Layout from '../shared/components/Layout';
+import CustomLoader from '../shared/components/CustomLoader';
+import ProfileCompletionGuard from '../features/profile/components/ProfileCompletionGuard';
+import WorkshiftDetailsPage from '../features/workshift/pages/WorkshiftDetailsPage';
+import AppLayout from './layouts/AppLayout';
+import AuthLayout from './layouts/AuthLayout';
 
 const AppRoutes = () => {
   return (
-    <Suspense fallback={<Loader />}>
+    <Suspense fallback={<CustomLoader />}>
       <Routes>
         {/* DesignSandbox */}
         {env.enableDevAuthBypass && (
@@ -27,8 +29,10 @@ const AppRoutes = () => {
         )}
 
         {/* Public routes */}
-        <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-        <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
+        <Route element={<AuthLayout />}>
+          <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+          <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
+        </Route>
 
         <Route element={<ProtectedRoute />}>
           <Route
@@ -36,12 +40,16 @@ const AppRoutes = () => {
             element={<CompleteProfilePage />}
           />
 
-          <Route element={<ProtectedProfileRoute />}>
-            <Route element={<Layout />}>
+          <Route element={<ProfileCompletionGuard />}>
+            <Route element={<AppLayout />}>
               <Route path={ROUTES.HOME} element={<WorkshiftsPage />} />
               <Route
                 path={ROUTES.ADD_WORKSHIFT}
                 element={<AddWorkshiftPage />}
+              />
+              <Route
+                path={ROUTES.DETAILS_WORKSHIFT}
+                element={<WorkshiftDetailsPage />}
               />
               <Route
                 path={ROUTES.EDIT_WORKSHIFT}

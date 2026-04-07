@@ -2,7 +2,6 @@ import { apiFetch } from '../../services/apiClient';
 import { API_ENDPOINTS } from '../../shared/config/api';
 
 export async function getBookingsByUserId() {
-  console.log('getBookings');
   return apiFetch(API_ENDPOINTS.booking, 'getallbyuserid');
 }
 
