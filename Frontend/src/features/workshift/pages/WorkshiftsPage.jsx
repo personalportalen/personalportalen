@@ -7,7 +7,7 @@ import { deleteWorkshift, getWorkshifts } from '../api';
 
 const WorkshiftsPage = () => {
   const [workshifts, setWorkshifts] = useState([]);
-  const { hasAnyRole } = useAuth();
+  const { hasAnyRole, isAdmin } = useAuth();
 
   const handleDeleteWorkshift = async (id) => {
     try {
@@ -35,7 +35,7 @@ const WorkshiftsPage = () => {
   return (
     <div className="home_container">
       <div className="workshifts_page-header-container">
-        <h1>Lediga pass</h1>
+        <h1>{isAdmin() ? 'Upplagda pass' : 'Lediga pass'}</h1>
         {hasAnyRole(['Admin', 'Passledare']) && (
           <Link to={'/add'} className="home_add-workshift">
             <p>+</p>

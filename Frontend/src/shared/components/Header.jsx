@@ -8,7 +8,8 @@ import { useAuth } from '../../context/AuthProvider';
 const Header = () => {
   const navigate = useNavigate();
 
-  const { logout, isAuthenticated, userProfile } = useAuth();
+  const { logout, isAuthenticated, isAdmin } = useAuth();
+  console.log('isAdmin(): ', isAdmin());
 
   const handleLogout = async () => {
     try {
@@ -29,10 +30,14 @@ const Header = () => {
               <IdCardLanyard className="header_icon" />
               Pass
             </Link>
-            <Link to={'/bookings'}>
-              <CalendarCheck2 className="header_icon" />
-              Bokningar
-            </Link>
+            {isAdmin() ? (
+              ''
+            ) : (
+              <Link to={'/bookings'}>
+                <CalendarCheck2 className="header_icon" />
+                Bokningar
+              </Link>
+            )}
             <Link to={'/konto'}>
               <User className="header_icon" />
               Mitt konto

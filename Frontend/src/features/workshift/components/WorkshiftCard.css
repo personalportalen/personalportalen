@@ -36,6 +36,12 @@
   user-select: none;
 }
 
+.wc__booking-status {
+  font-size: 0.7rem;
+  font-weight: 600;
+  align-self: center;
+}
+
 .wc_details {
   display: flex;
   justify-content: space-between;

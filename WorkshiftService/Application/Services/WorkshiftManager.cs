@@ -137,46 +137,39 @@ public class WorkshiftManager(IWorkshiftRepository workshiftRepository) : IWorks
         }
     }
 
-    public async Task<ServiceResult> UpdateAsync(WorkshiftUpdateForm form)
+    public async Task<ServiceResult> UpdateAsync(string id, WorkshiftUpdateForm form)
     {
         try
         {
-            var entity = new WorkshiftEntity
-            {
-                Id = form.Id,
-                Area = form.Area,
-                Level = form.Level,
-                Starttime = form.Starttime,
-                Endtime = form.Endtime,
-                EmployeeId = form.EmployeeId,
-                AddedByUserId = form.AddedByUserId,
-                AddedTime = form.AddedTime,
+            var existingEntity = await _repository.GetAsync(x => x.Id == id);
 
-            };
-
-            var result = await _repository.UpdateAsync(entity);
-
-            if (result.Succeeded)
+            if (existingEntity == null)
             {
                 return new ServiceResult
                 {
-                    Succeeded = true
+                    Succeeded = false
                 };
             }
 
+            existingEntity.Result.Area = form.Area;
+            existingEntity.Result.Level = form.Level;
+            existingEntity.Result.Starttime = form.Starttime;
+            existingEntity.Result.Endtime = form.Endtime;
+            existingEntity.Result.EmployeeId = form.EmployeeId;
+
+            var result = await _repository.UpdateAsync(existingEntity.Result);
+
             return new ServiceResult
             {
-                Succeeded = false,
-                //Error = result.Error
+                Succeeded = result.Succeeded
             };
-
         }
         catch (Exception ex)
         {
             return new ServiceResult
             {
                 Succeeded = false,
-                //Error = ex.Message
+                Message = ex.Message
             };
         }
     }

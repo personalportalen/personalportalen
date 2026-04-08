@@ -1,0 +1,15 @@
+.ssp__container {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.ssp__container div {
+  width: 70%;
+  padding-bottom: 5rem;
+}
+
+.ssp__container div h1 {
+  padding-bottom: 1rem;
+}

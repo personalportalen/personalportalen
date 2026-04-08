@@ -28,7 +28,7 @@ const BookingCard = ({ booking }) => {
           <p>{formatDate(booking.workshift.starttime)}</p>
         </div>
         <div className="wc_info-group">
-          <label>Bokat</label>
+          <label>Bokad</label>
 
           <p>{formatTime(booking.bookingCreated)}</p>
         </div>

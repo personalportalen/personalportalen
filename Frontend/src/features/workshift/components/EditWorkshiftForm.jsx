@@ -28,22 +28,22 @@ const EditWorkshiftForm = () => {
   const [form, setForm] = useState({
     area: '',
     level: '',
-    startTime: '',
-    endTime: '',
+    starttime: '',
+    endtime: '',
   });
 
   const [errors, setErrors] = useState({
     area: '',
     level: '',
-    startTime: '',
-    endTime: '',
+    starttime: '',
+    endtime: '',
   });
 
   const [touched, setTouched] = useState({
     area: false,
     level: false,
-    startTime: false,
-    endTime: false,
+    starttime: false,
+    endtime: false,
   });
 
   const [error, setError] = useState(null);
@@ -62,15 +62,15 @@ const EditWorkshiftForm = () => {
         if (value.trim().length < 2) return 'Nivå måste vara minst 2 tecken';
         return '';
 
-      case 'startTime':
+      case 'starttime':
         if (!value) return 'Starttid är obligatorisk';
         return '';
 
-      case 'endTime':
+      case 'endtime':
         if (!value) return 'Sluttid är obligatorisk';
         if (
-          allValues.startTime &&
-          new Date(value) <= new Date(allValues.startTime)
+          allValues.starttime &&
+          new Date(value) <= new Date(allValues.starttime)
         ) {
           return 'Sluttid måste vara efter starttid';
         }
@@ -85,8 +85,8 @@ const EditWorkshiftForm = () => {
     const newErrors = {
       area: validateField('area', form.area, form),
       level: validateField('level', form.level, form),
-      startTime: validateField('startTime', form.startTime, form),
-      endTime: validateField('endTime', form.endTime, form),
+      starttime: validateField('starttime', form.starttime, form),
+      endtime: validateField('endtime', form.endtime, form),
     };
 
     setErrors(newErrors);
@@ -107,11 +107,11 @@ const EditWorkshiftForm = () => {
         setForm({
           area: workshift?.area || '',
           level: workshift?.level || '',
-          startTime: formatDateTimeLocal(
-            workshift?.startTime || workshift?.starttime,
+          starttime: formatDateTimeLocal(
+            workshift?.starttime || workshift?.starttime,
           ),
-          endTime: formatDateTimeLocal(
-            workshift?.endTime || workshift?.endtime,
+          endtime: formatDateTimeLocal(
+            workshift?.endtime || workshift?.endtime,
           ),
         });
       } catch (err) {
@@ -148,9 +148,9 @@ const EditWorkshiftForm = () => {
         setErrors((prevErrors) => ({
           ...prevErrors,
           [name]: validateField(name, value, updated),
-          ...(name === 'startTime' || name === 'endTime'
+          ...(name === 'starttime' || name === 'endtime'
             ? {
-                endTime: validateField('endTime', updated.endTime, updated),
+                endtime: validateField('endtime', updated.endtime, updated),
               }
             : {}),
         }));
@@ -180,9 +180,9 @@ const EditWorkshiftForm = () => {
         setErrors((prevErrors) => ({
           ...prevErrors,
           [name]: validateField(name, trimmedValue, updated),
-          ...(name === 'startTime' || name === 'endTime'
+          ...(name === 'starttime' || name === 'endtime'
             ? {
-                endTime: validateField('endTime', updated.endTime, updated),
+                endtime: validateField('endtime', updated.endtime, updated),
               }
             : {}),
         }));
@@ -198,9 +198,9 @@ const EditWorkshiftForm = () => {
       setErrors((prev) => ({
         ...prev,
         [name]: validateField(name, value, updated),
-        ...(name === 'startTime' || name === 'endTime'
+        ...(name === 'starttime' || name === 'endtime'
           ? {
-              endTime: validateField('endTime', updated.endTime, updated),
+              endtime: validateField('endtime', updated.endtime, updated),
             }
           : {}),
       }));
@@ -214,8 +214,8 @@ const EditWorkshiftForm = () => {
     setTouched({
       area: true,
       level: true,
-      startTime: true,
-      endTime: true,
+      starttime: true,
+      endtime: true,
     });
 
     const isValid = validateForm();
@@ -231,7 +231,7 @@ const EditWorkshiftForm = () => {
         level: form.level.trim(),
       };
 
-      await updateWorkshift(id, cleanedForm);
+      await updateWorkshift(cleanedForm, id);
 
       navigate('/', { replace: true });
     } catch (err) {
@@ -305,21 +305,21 @@ const EditWorkshiftForm = () => {
             <label htmlFor="start-time">Starttid</label>
             <input
               id="start-time"
-              value={form.startTime}
-              name="startTime"
+              value={form.starttime}
+              name="starttime"
               type="datetime-local"
               onChange={handleChange}
               onBlur={handleBlur}
               disabled={saving}
               required
-              aria-invalid={!!errors.startTime}
+              aria-invalid={!!errors.starttime}
               aria-describedby={
-                errors.startTime ? 'start-time-error' : undefined
+                errors.starttime ? 'start-time-error' : undefined
               }
             />
-            {touched.startTime && errors.startTime && (
+            {touched.starttime && errors.starttime && (
               <p id="start-time-error" className="input-error">
-                {errors.startTime}
+                {errors.starttime}
               </p>
             )}
           </div>
@@ -327,19 +327,19 @@ const EditWorkshiftForm = () => {
             <label htmlFor="end-time">Sluttid</label>
             <input
               id="end-time"
-              value={form.endTime}
-              name="endTime"
+              value={form.endtime}
+              name="endtime"
               type="datetime-local"
               onChange={handleChange}
               onBlur={handleBlur}
               disabled={saving}
               required
-              aria-invalid={!!errors.endTime}
-              aria-describedby={errors.endTime ? 'end-time-error' : undefined}
+              aria-invalid={!!errors.endtime}
+              aria-describedby={errors.endtime ? 'end-time-error' : undefined}
             />
-            {touched.endTime && errors.endTime && (
+            {touched.endtime && errors.endtime && (
               <p id="end-time-error" className="input-error">
-                {errors.endTime}
+                {errors.endtime}
               </p>
             )}
           </div>

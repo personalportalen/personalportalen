@@ -58,17 +58,15 @@ public class WorkshiftController(IWorkshiftService workshiftService) : Controlle
     [Authorize(Roles = "Admin,Passledare")]
     public async Task<IActionResult> Update([FromRoute] string id, [FromBody] WorkshiftUpdateForm form)
     {
-        if (ModelState.IsValid)
-        {
-            form.Id = id;
-            var result = await _service.UpdateAsync(form);
-            if (result.Succeeded)
-            {
-                return Ok(new ApiResponse(true, "Workshift was updated"));
-            }
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        var result = await _service.UpdateAsync(id, form);
+
+        if (!result.Succeeded)
             return StatusCode(500);
-        }
-        return BadRequest(ModelState);
+
+        return Ok(new ApiResponse(true, "Workshift was updated"));
     }
 
     [HttpDelete("{id}")]

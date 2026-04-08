@@ -1,5 +1,5 @@
 import './WorkshiftCard.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../../context/AuthProvider';
 import { deleteWorkshift } from '../api';
 import { createBooking } from '../../booking/api';
@@ -8,7 +8,9 @@ import { Link } from 'react-router-dom';
 
 const WorkshiftCard = ({ workshift, onDelete }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [unConfirmed, setUnConfirmed] = useState(false);
   const { isAuthenticated, hasRole } = useAuth();
+  const [bookingSucceeded, setBookingSucceeded] = useState(false);
 
   const formatTime = (time) => time?.slice(11, 16).replace(':', '.');
   const formatDate = (date) => {
@@ -20,15 +22,30 @@ const WorkshiftCard = ({ workshift, onDelete }) => {
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
+    setUnConfirmed(false);
   };
 
   const handleBook = async () => {
+    setUnConfirmed(true);
+  };
+
+  const confirmBook = async () => {
     try {
       await createBooking({ workshiftId: workshift.id });
+      setBookingSucceeded(true);
     } catch (err) {
       console.error(err);
     }
+    setUnConfirmed(false);
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setBookingSucceeded(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, [bookingSucceeded]);
 
   return (
     <div className={`wc_container ${isOpen ? 'open' : ''}`}>
@@ -83,9 +100,17 @@ const WorkshiftCard = ({ workshift, onDelete }) => {
             )}
 
             {isAuthenticated && !hasRole('Admin') && (
-              <button onClick={handleBook} className="button button-prim">
-                Boka
-              </button>
+              <>
+                <p className="wc__booking-status">
+                  {bookingSucceeded ? 'Bokning genomförd!' : ''}
+                </p>
+                <button
+                  onClick={unConfirmed ? confirmBook : handleBook}
+                  className="button button-prim"
+                >
+                  {unConfirmed ? 'Bekräfta bokning' : 'Boka'}
+                </button>
+              </>
             )}
           </div>
         </div>

@@ -18,10 +18,17 @@ export const createWorkshift = (payload) => {
 };
 
 export const updateWorkshift = (payload, id) => {
-  console.log('id', id);
+  const normalizedPayload = {
+    ...payload,
+    starttime: `${payload.starttime}:00`,
+    endtime: `${payload.endtime}:00`,
+  };
+
+  console.log('payload:', normalizedPayload);
+
   return apiFetch(API_ENDPOINTS.workshift, id, {
     method: 'PUT',
-    body: JSON.stringify(payload),
+    body: normalizedPayload,
   });
 };
 

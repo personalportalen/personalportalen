@@ -1,10 +1,8 @@
 .app-main {
-  min-height: calc(100vh - var(--header-height));
   padding: var(--space-lg) var(--space-sm) var(--space-xl);
 }
 
 .app-container {
-  width: 100%;
   max-width: var(--container-width);
   margin: 0 auto;
 }

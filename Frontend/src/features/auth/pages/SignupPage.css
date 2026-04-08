@@ -3,21 +3,19 @@
   grid-template-columns: 5fr 4fr;
   height: 100vh;
   overflow: hidden;
-  background-color: white;
 }
 
-.signup_page form h1{
-    letter-spacing: -3%;
+.signup_page form h1 {
+  letter-spacing: -3%;
 }
 
 .signup_page img {
   height: calc(100vh - 2rem);
-  width: calc(100% - 2rem);
+  width: calc(100% - 1rem);
   object-fit: cover;
   margin: 1rem;
   border-radius: 12px;
 }
-
 
 .signup_left-side {
   display: grid;
@@ -26,8 +24,6 @@
   padding-left: 3rem;
   height: 100%;
 }
-
-
 
 .already-account_group {
   text-align: center;
@@ -47,7 +43,7 @@
   align-items: center;
 }
 
-.signup_icon_arrowright{
-    height: 16px;
-    width: 16px;
+.signup_icon_arrowright {
+  height: 16px;
+  width: 16px;
 }
