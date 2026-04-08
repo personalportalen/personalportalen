@@ -1,7 +1,7 @@
 import React from 'react';
 import './SmallScreenPage.css';
 
-const smallScreenPage = () => {
+const SmallScreenPage = () => {
   return (
     <div className="ssp__container">
       <div>
@@ -20,4 +20,4 @@ const smallScreenPage = () => {
   );
 };
 
-export default smallScreenPage;
+export default SmallScreenPage;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import AppRoutes from './AppRoutes';
-import SmallScreenPage from './smallScreenPage';
+import SmallScreenPage from './SmallScreenPage';
 
 function App() {
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 1024);

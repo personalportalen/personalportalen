@@ -93,7 +93,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendPolicy", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(
+            "http://localhost:5173", 
+            "http://localhost:3000", 
+            "https://localhost:5173", 
+            "https://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
@@ -119,13 +123,10 @@ app.MapGet("/health/dependencies", async (IHttpClientFactory httpClientFactory) 
     var client = httpClientFactory.CreateClient();
     client.Timeout = TimeSpan.FromSeconds(3);
 
-    var services = new Dictionary<string, string>
-    {
-        ["auth"] = "http://localhost:5091/health",
-        ["profile"] = "https://localhost:7294/health",
-        ["booking"] = "https://localhost:7213/health",
-        ["workshift"] = "https://localhost:7103/health"
-    };
+    var services = builder.Configuration
+    .GetSection("ServiceHealthUrls")
+    .GetChildren()
+    .ToDictionary(x => x.Key.ToLower(), x => x.Value!);
 
     var results = new Dictionary<string, string>
     {
@@ -179,7 +180,7 @@ app.Use(async (context, next) =>
 
 app.MapReverseProxy();
 
-app.Run("https://localhost:7265");
+app.Run();
 
 //Console.WriteLine("🚀 GATEWAY BUILD STARTED - TEST BUILD 123");
 
