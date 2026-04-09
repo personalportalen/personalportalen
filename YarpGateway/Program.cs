@@ -23,14 +23,13 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
-Console.WriteLine("🚀 GATEWAY STARTED - STEP 7B (DEPENDENCY HEALTH)");
+Console.WriteLine("GATEWAY STARTED -  (DEPENDENCY HEALTH)");
 Console.WriteLine($"ENVIRONMENT: {builder.Environment.EnvironmentName}");
 
 builder.Services
     .AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
-// 🔐 JWT AUTH
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -69,12 +68,12 @@ builder.Services
             },
             OnAuthenticationFailed = context =>
             {
-                Console.WriteLine("❌ JWT ERROR: " + context.Exception.Message);
+                Console.WriteLine("JWT ERROR: " + context.Exception.Message);
                 return Task.CompletedTask;
             },
             OnTokenValidated = context =>
             {
-                Console.WriteLine("✅ TOKEN VALID");
+                Console.WriteLine("TOKEN VALID");
                 return Task.CompletedTask;
             }
         };
@@ -88,7 +87,6 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
-// 🌐 CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("FrontendPolicy", policy =>
@@ -97,18 +95,17 @@ builder.Services.AddCors(options =>
             "http://localhost:3000", 
             "http://localhost:5173", 
             "https://localhost:5173", 
-            "https://localhost:3000")
+            "https://localhost:3000",
+            "http://134.112.16.170:3000")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
     });
 });
 
-// ❤️ BASIC HEALTH
 builder.Services.AddHealthChecks()
     .AddCheck("gateway", () => HealthCheckResult.Healthy("Gateway is running"));
 
-// 🌍 HTTP CLIENT FOR DEPENDENCY CHECKS
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
@@ -117,7 +114,6 @@ app.MapGet("/__fingerprint", () => Results.Text("gateway-step7b-ok"));
 
 app.MapHealthChecks("/health");
 
-// 🔎 Dependency health endpoint
 app.MapGet("/health/dependencies", async (IHttpClientFactory httpClientFactory) =>
 {
     var client = httpClientFactory.CreateClient();
@@ -155,11 +151,9 @@ app.MapGet("/health/dependencies", async (IHttpClientFactory httpClientFactory) 
 
 app.UseCors("FrontendPolicy");
 
-// 🔐 IMPORTANT ORDER
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 📊 Logging + Correlation
 app.Use(async (context, next) =>
 {
     var correlationId = context.Request.Headers["X-Correlation-ID"].FirstOrDefault()
@@ -182,7 +176,7 @@ app.MapReverseProxy();
 
 app.Run();
 
-//Console.WriteLine("🚀 GATEWAY BUILD STARTED - TEST BUILD 123");
+//Console.WriteLine("GATEWAY BUILD STARTED - TEST BUILD 123");
 
 //var builder = WebApplication.CreateBuilder(args);
 
@@ -316,12 +310,12 @@ app.Run();
 //            },
 //            OnAuthenticationFailed = context =>
 //            {
-//                Console.WriteLine("❌ JWT ERROR: " + context.Exception.Message);
+//                Console.WriteLine(" JWT ERROR: " + context.Exception.Message);
 //                return Task.CompletedTask;
 //            },
 //            OnTokenValidated = context =>
 //            {
-//                Console.WriteLine("✅ TOKEN VALID");
+//                Console.WriteLine(" TOKEN VALID");
 //                return Task.CompletedTask;
 //            }
 //        };
