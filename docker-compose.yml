@@ -166,18 +166,18 @@ services:
     networks:
       - backend-network
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    profiles:
-      - monitoring
-    volumes:
-      - ./Infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
-    restart: unless-stopped
-    networks:
-      - backend-network
+  #prometheus:
+  #image: prom/prometheus
+  #container_name: prometheus
+  #profiles:
+  #- monitoring
+  #volumes:
+  #- ./Infrastructure/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #ports:
+  #- "9090:9090"
+  #restart: unless-stopped
+  #networks:
+  #- backend-network
 
 volumes:
   sql_data:
