@@ -24,8 +24,10 @@ The application is **publicly deployed** and can also be **run locally using Doc
 
 ## Screenshots
 
-![Screenshot](images/screenshot_login.png)
-![Screenshot](images/screenshot_signup.png)
+<p align="center">
+  <img src="images/screenshot_login.png" width="45%" />
+  <img src="images/screenshot_signup.png" width="45%" />
+</p>
 
 ## Quick Overview (for recruiters)
 
@@ -221,10 +223,6 @@ This architecture allows easy evolution into a **microservice-based system**.
 
 ---
 
-## Database
-
-The application supports both **local and cloud databases**.
-
 ### Technologies
 
 - Entity Framework Core
@@ -233,77 +231,9 @@ The application supports both **local and cloud databases**.
 ### Core entities
 
 - Users
+- Profiles
 - Shifts
 - Bookings
-
----
-
-## Testing Strategy
-
-The project includes multiple layers of testing.
-
-### Unit Tests
-
-Focused on domain and business logic.
-
-### Integration Tests
-
-Tests API endpoints using real infrastructure.
-
-### Testcontainers
-
-Integration tests spin up real containers for dependencies to create reliable test environments.
-
-### Tools
-
-- xUnit
-- Moq
-- Testcontainers
-
----
-
-## CI/CD Pipeline
-
-The project uses **GitHub Actions** to implement a DevSecOps pipeline.
-
-### Pipeline stages
-
-```
-Push / Pull Request
-        │
-        ▼
-Lint
-        │
-        ▼
-Unit Tests
-        │
-        ▼
-Build
-        │
-        ▼
-SBOM Generation
-        │
-        ▼
-SAST / Code Quality
-        │
-        ▼
-Dependency Scan
-        │
-        ▼
-Docker Build
-        │
-        ▼
-Deploy
-```
-
-This ensures the system is automatically:
-
-- Tested
-- Analyzed for vulnerabilities
-- Built into containers
-- Deployed
-
----
 
 ## Observability
 
@@ -316,10 +246,7 @@ Modern production systems require strong observability.
 
 ### Distributed Tracing
 
-- OpenTelemetry
 - Correlation IDs
-
-This makes it possible to trace requests across services.
 
 ### Health Checks
 
@@ -338,7 +265,6 @@ Security considerations include:
 - Authentication
 - Protected routes
 - Dependency vulnerability scanning
-- SAST scanning in CI pipeline
 
 ---
 
@@ -362,7 +288,6 @@ This project was created to demonstrate the ability to build software with:
 
 - Real-world architecture
 - DevSecOps workflows
-- Automated testing
 - Modern frontend practices
 - Observability
 
