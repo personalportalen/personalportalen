@@ -1,22 +1,19 @@
 ![.NET](https://img.shields.io/badge/.NET-8-blue)
-![React](https://img.shields.io/badge/React-TypeScript-blue)
-![CI](https://img.shields.io/badge/CI-GitHub_Actions-green)
 ![Docker](https://img.shields.io/badge/Docker-ready-blue)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
-![Tests](https://img.shields.io/badge/tests-passing-brightgreen)
 
-# WorkShift
+# StaffSystem
 
 A production-style **fullstack shift booking system** built with **.NET, React and modern DevSecOps practices**.
 
 This project was built as my **final portfolio project during my .NET Fullstack YH education**.
 Instead of building multiple small demos, I focused on creating **one realistic system that demonstrates how modern software is built, tested, secured and deployed.**
 
-The project includes and implements:
+The system is designed with a focus on:
 
-- Clean architecture
-- Observability
-- Scalable system design
+- API Gateway architecture
+- Event-driven communication
+- Observability and monitoring
+- Scalable and maintainable system design
 
 The application is **publicly deployed** and can also be **run locally using Docker**.
 
@@ -31,44 +28,35 @@ The application is **publicly deployed** and can also be **run locally using Doc
 
 ## Quick Overview (for recruiters)
 
-### Problem solved
+This project demonstrates how to build a production-style system using modern DevOps and distributed system practices.
 
-Managing employee work shifts where:
+### Architecture
 
-- Admins create and manage shifts
-- Employees can book available shifts
-- The system handles authentication and authorization
+<img src="images/component_diagram.png" width="45%" />
 
-### Tech Stack
+### Key capabilities
 
-**Backend**
+- API Gateway using YARP (routing, authentication, cross-cutting concerns)
+- Event-driven communication via service bus (automatic profile creation)
+- Containerized microservices using Docker
+- Centralized authentication (JWT)
+- Observability with OpenTelemetry, correlation IDs and health checks
+- Clean Architecture with clear separation of concerns
 
-- ASP.NET Web API
-- Clean Architecture
-- FluentValidation
+## Event-Driven Communication
 
-**Frontend**
+The system uses a service bus for asynchronous communication between services.
 
-- React
+Example:
 
-**Infrastructure**
+- When a user is created → an event is published
+- The profile service consumes the event and creates a user profile automatically
 
-- YARP API Gateway
-- Docker
+This enables:
 
-**Observability**
-
-- OpenTelemetry distributed tracing
-- Health checks
-
-## DevOps Capabilities Demonstrated
-
-This project demonstrates several DevOps and DevSecOps practices:
-
-• Containerized services using Docker  
-• Distributed tracing using OpenTelemetry  
-• Health monitoring endpoints  
-• API Gateway architecture using YARP
+- Loose coupling between services
+- Better scalability
+- More resilient system design
 
 ---
 
@@ -84,24 +72,17 @@ API Gateway
 
 ## Deployment
 
-The application is deployed using containerized services.
+The system is designed to mimic a production setup:
 
-Deployment setup:
+- Containerized services using Docker
+- API Gateway as single entry point
+- Environment-based configuration
+- Services communicate over internal network
+- Configuration via environment variables
 
-- Docker containers
-- YARP API Gateway for routing
-- ASP.NET APIs running behind the gateway
-- Environment configuration via environment variables
+Typical flow:
 
-Deployment flow:
-
-Developer Push
-│
-▼
-Docker image build
-│
-▼
-Container deployment
+Code → Build → Container → Run
 
 ---
 
@@ -210,16 +191,17 @@ The backend consists of **ASP.NET Web APIs** designed around **Clean Architectur
 
 ## API Gateway
 
-The system uses **YARP (Yet Another Reverse Proxy)** as an API Gateway.
+The system uses YARP as an API Gateway to handle cross-cutting concerns.
 
-### Responsibilities
+Responsibilities include:
 
-- Central entry point for APIs
-- Request routing
-- Service abstraction
-- Future microservice expansion
+- Centralized authentication (JWT validation)
+- Request routing to backend services
+- CORS handling
+- Request logging and correlation IDs
 
-This architecture allows easy evolution into a **microservice-based system**.
+This keeps services focused on business logic while the gateway handles shared concerns.
+This pattern improves maintainability, security and consistency across services.
 
 ---
 
@@ -235,26 +217,23 @@ This architecture allows easy evolution into a **microservice-based system**.
 - Shifts
 - Bookings
 
+---
+
 ## Observability
 
-Modern production systems require strong observability.
+### Distributed tracing
+
+- Correlation IDs are generated and propagated across services
+- Enables tracing requests through the entire system
+
+### Health monitoring
+
+- Health endpoints for each service
+- Dependency health checks via the gateway
 
 ### Logging
 
-- Serilog
-- Structured logging
-
-### Distributed Tracing
-
-- Correlation IDs
-
-### Health Checks
-
-Health endpoints are implemented for:
-
-- Application services
-- Containers
-- Infrastructure
+- Structured logging using Serilog
 
 ---
 
@@ -262,36 +241,10 @@ Health endpoints are implemented for:
 
 Security considerations include:
 
-- Authentication
-- Protected routes
+- JWT-based authentication
 - Dependency vulnerability scanning
-
----
-
-## Use of AI
-
-AI tools were used as **engineering assistance during development**, similar to modern development workflows.
-
-Examples include:
-
-- Debugging assistance
-- Architecture brainstorming
-- Documentation support
-
-All generated suggestions were **reviewed and implemented manually**.
-
----
-
-## Why This Project Exists
-
-This project was created to demonstrate the ability to build software with:
-
-- Real-world architecture
-- DevSecOps workflows
-- Modern frontend practices
-- Observability
-
-It reflects the **kind of engineering environment I want to work in as a developer**.
+- Secure handling of container images
+- Separation of concerns via API Gateway
 
 ---
 
