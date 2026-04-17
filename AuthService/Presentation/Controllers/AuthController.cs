@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Helpers;
 using Presentation.Models;
 using System.Security.Claims;
 
@@ -10,10 +11,10 @@ namespace Presentation.Controllers;
 
 [Route("auth")]
 [ApiController]
-public class AuthController(IAuthService authService) : ControllerBase
+public class AuthController(IAuthService authService, CookieService cookieService) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
-
+    private readonly CookieService _cookieService = cookieService;
     /// <summary>
     /// Register a new user
     /// </summary>
@@ -41,21 +42,8 @@ public class AuthController(IAuthService authService) : ControllerBase
             return StatusCode(result.StatusCode, new ApiResponse(false, result.Message));
         }
 
-        Response.Cookies.Append("accessToken", result.Data.Token, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = false,
-            SameSite = SameSiteMode.Lax,
-            Expires = DateTime.UtcNow.AddMinutes(15)
-        });
-
-        Response.Cookies.Append("refreshToken", result.Data.RefreshToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = false,
-            SameSite = SameSiteMode.Lax,
-            Expires = DateTime.UtcNow.AddDays(7)
-        });
+        Response.Cookies.Append("accessToken", result.Data.Token, _cookieService.CreateAccessTokenCookie());
+        Response.Cookies.Append("refreshToken", result.Data.RefreshToken, _cookieService.CreateRefreshTokenCookie());
 
         return result.Succeeded
             ? Ok(new ApiResponse(true, "User signed in successfully"))

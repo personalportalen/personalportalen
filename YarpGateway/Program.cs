@@ -34,7 +34,7 @@ builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = false;
+        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
 
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -92,8 +92,6 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendPolicy", policy =>
     {
         policy.WithOrigins(
-            "http://localhost:3000", 
-            "http://localhost:5173", 
             "https://localhost:5173", 
             "https://localhost:3000",
             "http://134.112.16.170:3000")
@@ -109,6 +107,13 @@ builder.Services.AddHealthChecks()
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
 
 app.MapGet("/__fingerprint", () => Results.Text("gateway-step7b-ok"));
 
