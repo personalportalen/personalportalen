@@ -39,7 +39,7 @@ public class AuthManager(UserManager<AppUser> userManager, SignInManager<AppUser
             if (!result.Succeeded)
                 return result.FromIdentityResult<SignUpResponseDto>("User creation failed");
 
-            await _userManager.AddToRoleAsync(newUser, "Admin");
+            await _userManager.AddToRoleAsync(newUser, "Anställd");
 
             await _eventPublisher.PublishUserCreated(new UserCreatedEvent
             {
