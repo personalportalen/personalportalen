@@ -12,7 +12,7 @@ validateEnv();
 
 const app = (
   <AuthProvider>
-    <BrowserRouter>
+    <BrowserRouter basename="/personalportalen">
       <App />
     </BrowserRouter>
   </AuthProvider>
