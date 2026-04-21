@@ -37,6 +37,8 @@ services:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: ${AUTH_CONNECTION_STRING}
+      ServiceBus__SubscriptionName: profile-service-dev
+
     depends_on:
       sqlserver:
         condition: service_healthy
