@@ -37,6 +37,7 @@ services:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: ${AUTH_CONNECTION_STRING}
+      ServiceBus__ConnectionString: Endpoint=sb://portfolio-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=t/ulwPS42Hy6QP0mErvExWx3MtFUzTc2W+ASbHE0YZU=
       ServiceBus__TopicName: user-events
 
     depends_on:
@@ -62,6 +63,7 @@ services:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: ${PROFILE_CONNECTION_STRING}
+      ServiceBus__ConnectionString: Endpoint=sb://portfolio-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=t/ulwPS42Hy6QP0mErvExWx3MtFUzTc2W+ASbHE0YZU=
       ServiceBus__SubscriptionName: profile-service-dev
     depends_on:
       sqlserver:
