@@ -14,6 +14,9 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//DbSeed
+builder.Services.AddScoped<IDbSeeder, DbSeeder>();
+
 //Health checks
 builder.Services.AddHealthChecks();
 
@@ -82,6 +85,11 @@ using (var scope = app.Services.CreateScope())
 
 if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<IDbSeeder>();
+
+    await seeder.SeedAsync();
+
     app.UseSwagger();
     app.UseSwaggerUI();
 }
