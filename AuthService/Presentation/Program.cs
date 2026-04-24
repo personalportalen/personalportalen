@@ -33,6 +33,9 @@ builder.Services
     .AddEntityFrameworkStores<DataContext>()
     .AddDefaultTokenProviders();
 
+//DbSeeder
+builder.Services.AddScoped<IDbSeeder, DbSeeder>();
+
 //Health checks
 builder.Services.AddHealthChecks();
 
@@ -139,8 +142,6 @@ using (var scope = app.Services.CreateScope())
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
 
-    await SeedData.InitializeAsync(context, userManager, roleManager);
-
     string[] roles = { "Admin", "Anställd", "Passledare" };
     foreach (var role in roles)
     {
@@ -167,6 +168,11 @@ using (var scope = app.Services.CreateScope())
 
 if (app.Environment.IsDevelopment())
 {
+    using var scope = app.Services.CreateScope();
+    var seeder = scope.ServiceProvider.GetRequiredService<IDbSeeder>();
+
+    await seeder.SeedAsync();
+
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
