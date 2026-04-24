@@ -3,7 +3,6 @@ version: "3.8"
 services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserver-dev
     env_file:
       - .env
     environment:
@@ -134,7 +133,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Docker
       ASPNETCORE_URLS: http://+:8080
     ports:
-      - "5000:8080"
+      - "5001:8080"
     depends_on:
       auth-api:
         condition: service_healthy
