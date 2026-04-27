@@ -1,6 +1,21 @@
-.env
+# Build outputs
 bin/
 obj/
-node_modules/
 dist/
+
+# Dependencies
+node_modules/
+
+# IDE
 .vs/
+
+# Environment files
+.env
+.env.prod
+frontend/.env
+frontend/.env.production
+
+# Keep examples (commit these)
+!.env.example
+!.env.prod.example
+!frontend/.env.example
