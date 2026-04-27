@@ -8,8 +8,6 @@ export async function getCurrentUserProfile() {
 }
 
 export async function updateProfile(payload) {
-  console.log('payload:', payload);
-
   return apiFetch(API_ENDPOINTS.profile, 'update', {
     method: 'PUT',
     body: JSON.stringify(payload),

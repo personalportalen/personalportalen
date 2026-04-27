@@ -49,8 +49,6 @@ const ProfileUpdateForm = () => {
 
     const profile = userProfile?.data || userProfile;
 
-    console.log('userProfile.data:', userProfile.data);
-
     setForm({
       firstName: profile?.firstName || '',
       lastName: profile?.lastName || '',
@@ -66,8 +64,6 @@ const ProfileUpdateForm = () => {
       },
     });
   }, [userProfile]);
-
-  console.log('form:', form);
 
   const validateField = (name, value) => {
     const trimmedValue = value.trim();
@@ -242,8 +238,6 @@ const ProfileUpdateForm = () => {
           zipCode: form.address.zipCode.trim(),
         },
       };
-
-      console.log('form: ', cleanedForm);
 
       await updateProfile(cleanedForm);
       await refreshProfile();

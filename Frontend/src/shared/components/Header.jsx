@@ -9,7 +9,6 @@ const Header = () => {
   const navigate = useNavigate();
 
   const { logout, isAuthenticated, isAdmin } = useAuth();
-  console.log('isAdmin(): ', isAdmin());
 
   const handleLogout = async () => {
     try {
