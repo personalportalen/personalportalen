@@ -2,11 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthProvider';
 import { ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { completeProfile } from '../api';
+import { updateProfile } from '../api';
 
 const ProfileUpdateForm = () => {
   const navigate = useNavigate();
-  const { userProfile, refresh } = useAuth();
+  const { userProfile, refreshProfile } = useAuth();
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,10 +49,12 @@ const ProfileUpdateForm = () => {
 
     const profile = userProfile?.data || userProfile;
 
+    console.log('userProfile.data:', userProfile.data);
+
     setForm({
       firstName: profile?.firstName || '',
       lastName: profile?.lastName || '',
-      phoneNumber: profile?.phoneNumber || '',
+      phoneNumber: profile?.phone || '',
       imageUrl: profile?.imageUrl || '',
       address: {
         id: profile?.address?.id || 10,
@@ -64,6 +66,8 @@ const ProfileUpdateForm = () => {
       },
     });
   }, [userProfile]);
+
+  console.log('form:', form);
 
   const validateField = (name, value) => {
     const trimmedValue = value.trim();
@@ -241,8 +245,8 @@ const ProfileUpdateForm = () => {
 
       console.log('form: ', cleanedForm);
 
-      await completeProfile(cleanedForm);
-      await refresh();
+      await updateProfile(cleanedForm);
+      await refreshProfile();
 
       navigate('/konto');
     } catch (err) {
