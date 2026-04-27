@@ -5,7 +5,7 @@ services:
     env_file:
       - .env
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Development
       SA_PASSWORD: ${SQL_PASSWORD}
     ports:
       - "1433:1433"
@@ -14,7 +14,7 @@ services:
     env_file:
       - .env
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: ${AUTH_CONNECTION_STRING}
       ServiceBus__ConnectionString: "Endpoint=sb://portfolio-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=t/ulwPS42Hy6QP0mErvExWx3MtFUzTc2W+ASbHE0YZU="
@@ -24,7 +24,7 @@ services:
     env_file:
       - .env
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: ${PROFILE_CONNECTION_STRING}
       ServiceBus__ConnectionString: "Endpoint=sb://portfolio-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=t/ulwPS42Hy6QP0mErvExWx3MtFUzTc2W+ASbHE0YZU="
@@ -34,7 +34,7 @@ services:
     env_file:
       - .env
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: ${BOOKING_CONNECTION_STRING}
 
@@ -42,7 +42,7 @@ services:
     env_file:
       - .env
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_URLS: http://+:8080
       ConnectionStrings__DefaultConnection: ${WORKSHIFT_CONNECTION_STRING}
 
@@ -60,7 +60,7 @@ services:
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL}
     environment:
-      ASPNETCORE_ENVIRONMENT: Docker
+      ASPNETCORE_ENVIRONMENT: Development
       VITE_API_BASE_URL: ${VITE_API_BASE_URL}
     ports:
       - "3000:80"
