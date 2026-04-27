@@ -24,7 +24,7 @@ services:
       ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=ProfileDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True;
       ASPNETCORE_URLS: http://+:8080
       ServiceBus__ConnectionString: "Endpoint=sb://portfolio-servicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=t/ulwPS42Hy6QP0mErvExWx3MtFUzTc2W+ASbHE0YZU="
-      ServiceBus__SubscriptionName: "profile-service-dev"
+      ServiceBus__SubscriptionName: "profile-service"
     env_file:
       - .env.prod
 
