@@ -1,4 +1,3 @@
-import React from 'react';
 import './Header.css';
 import { CalendarCheck2, IdCardLanyard, User } from 'lucide-react';
 

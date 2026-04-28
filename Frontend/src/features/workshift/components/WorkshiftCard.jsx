@@ -1,7 +1,6 @@
 import './WorkshiftCard.css';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../../context/AuthProvider';
-import { deleteWorkshift } from '../api';
 import { createBooking } from '../../booking/api';
 import { ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';

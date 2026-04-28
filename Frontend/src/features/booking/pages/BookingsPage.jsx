@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import BookingCard from '../components/BookingCard';
 import './BookingsPage.css';
 import { getBookingsByUserId } from '../api';

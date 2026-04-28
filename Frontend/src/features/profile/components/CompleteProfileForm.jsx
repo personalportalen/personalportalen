@@ -1,6 +1,6 @@
 import './CompleteProfileForm.css';
 import { ArrowRight } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { completeProfile } from '../api';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthProvider';

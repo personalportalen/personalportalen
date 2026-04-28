@@ -35,8 +35,8 @@ export function AuthProvider({ children }) {
           statusCode: 200,
           data: {
             email: 'demo@domain.com',
-            firstName: 'Kalle',
-            lastName: 'Karlsson',
+            firstName: 'Björn',
+            lastName: 'Björnsson',
             phoneNumber: '0704513265',
             address: {
               id: 10,
@@ -131,7 +131,6 @@ export function AuthProvider({ children }) {
   const hasProfile = !!userProfile;
   const isProfileComplete = userProfile?.data?.isProfileCompleted === true;
 
-  // Viktigt för guards:
   const isReadyForGuards =
     !authLoading && !profileLoading && !profileRefreshing;
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './WorkshiftsPage.css';
 import WorkshiftCard from '../components/WorkshiftCard';
 import { Link } from 'react-router-dom';

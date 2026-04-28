@@ -23,7 +23,7 @@ The application is **publicly deployed** and can also be **run locally using Doc
 
 <p align="center">
   <img src="images/screenshot_login.png" width="45%" />
-  <img src="images/screenshot_signup.png" width="45%" />
+  <img src="images/workshifts.png" width="45%" />
 </p>
 
 ## Quick Overview (for recruiters)
@@ -63,10 +63,10 @@ This enables:
 ## Live Demo
 
 Frontend
-`https://your-demo-url`
+`https://rasmuswaleij.se/personalportalen`
 
 API Gateway
-`https://your-api-url`
+`https://rasmuswaleij.se/api`
 
 ---
 
@@ -127,8 +127,16 @@ git clone https://github.com/StaffSystemW/staffsystem.git
 
 ### Run locally with Docker
 
+Use Docker Compose (v2 preferred):
+
 ```bash
 docker compose up --build
+```
+
+If you are on an older setup:
+
+```bash
+docker-compose up --build
 ```
 
 Services will start automatically.
@@ -160,9 +168,9 @@ frontend
 │
 ├── components
 ├── pages
-├── hooks
+├── features
 ├── services
-├── types
+├── config
 └── utils
 ```
 
@@ -214,7 +222,7 @@ This pattern improves maintainability, security and consistency across services.
 
 - Users
 - Profiles
-- Shifts
+- Workshifts
 - Bookings
 
 ---
@@ -231,10 +239,6 @@ This pattern improves maintainability, security and consistency across services.
 - Health endpoints for each service
 - Dependency health checks via the gateway
 
-### Logging
-
-- Structured logging using Serilog
-
 ---
 
 ## Security Practices
@@ -242,7 +246,6 @@ This pattern improves maintainability, security and consistency across services.
 Security considerations include:
 
 - JWT-based authentication
-- Dependency vulnerability scanning
 - Secure handling of container images
 - Separation of concerns via API Gateway
 
@@ -253,4 +256,4 @@ Security considerations include:
 If you have feedback, questions, or opportunities to collaborate:
 
 LinkedIn: www.linkedin.com/in/rasmus-waleij-4791a7128  
-Email: rasmus [dot] waleij [at] gmail [dot] com
+Email: rasmus.waleij@gmail.com
