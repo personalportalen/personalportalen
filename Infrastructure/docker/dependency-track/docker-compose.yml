@@ -1,0 +1,78 @@
+networks:
+  dtrack-backend:
+  dtrack-frontend:
+
+services:
+  dtrack-postgres:
+    container_name: dtrack-postgres
+    image: postgres:15.6
+    env_file:
+      - ./postgres.env
+    volumes:
+      - dtrack-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dtrack"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - dtrack-backend
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    deploy:
+      resources:
+        limits:
+          memory: 26
+
+  dtrack-apiserver:
+    container_name: dtrack-apiserver
+    image: dependencytrack/apiserver:4.13.6
+    env_file:
+      - ./apiserver.env
+    depends_on:
+      dtrack-postgres:
+        condition: service_healthy
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+
+    ports:
+      - "8083:8080"
+    volumes:
+      - dtrack-data:/data
+    restart: unless-stopped
+    networks:
+      - dtrack-backend
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  dtrack-frontend:
+    container_name: dtrack-frontend
+    image: dependencytrack/frontend:4.13.6
+    depends_on:
+      - dtrack-apiserver
+    environment:
+      - API_BASE_URL=http://localhost:8083
+    ports:
+      - "8082:8080"
+    restart: unless-stopped
+    networks:
+      - dtrack-frontend
+      - dtrack-backend
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+volumes:
+  dtrack-postgres-data:
+  dtrack-data:
