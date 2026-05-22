@@ -1,0 +1,169 @@
+name: Backend CI
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'AuthService/**'
+      - 'BookingService/**'
+      - 'ProfileService/**'
+      - 'WorkshiftService/**'
+      - 'YarpGateway/**'
+      - 'Shared/**'
+      - 'tests/**'
+      - '.github/workflows/backend-ci.yml'
+      - 'Directory.Packages.props'
+      - 'global.json'
+      - 'StaffSystem.slnx'
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'AuthService/**'
+      - 'BookingService/**'
+      - 'ProfileService/**'
+      - 'WorkshiftService/**'
+      - 'YarpGateway/**'
+      - 'Shared/**'
+      - 'tests/**'
+      - '.github/workflows/backend-ci.yml'
+      - 'Directory.Packages.props'
+      - 'global.json'
+      - 'StaffSystem.slnx'
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  backend-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Restore dependencies
+        run: dotnet restore StaffSystem.slnx
+
+      - name: Verify code formatting
+        run: dotnet format StaffSystem.slnx --verify-no-changes --verbosity diagnostic
+
+      - name: Build solution
+        run: dotnet build StaffSystem.slnx --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test StaffSystem.slnx --configuration Release --no-build --verbosity normal
+
+      - name: Publish AuthService
+        run: dotnet publish ./AuthService/AuthService.csproj -c Release -o ./publish/AuthService
+
+      - name: Publish BookingService
+        run: dotnet publish ./BookingService/BookingService.csproj -c Release -o ./publish/BookingService
+
+      - name: Publish ProfileService
+        run: dotnet publish ./ProfileService/ProfileService.csproj -c Release -o ./publish/ProfileService
+
+      - name: Publish WorkshiftService
+        run: dotnet publish ./WorkshiftService/WorkshiftService.csproj -c Release -o ./publish/WorkshiftService
+
+      - name: Publish YarpGateway
+        run: dotnet publish ./YarpGateway/YarpGateway.csproj -c Release -o ./publish/YarpGateway
+
+      - name: Build AuthService Docker image
+        run: docker build -t authservice:latest ./AuthService
+
+      - name: Build BookingService Docker image
+        run: docker build -t bookingservice:latest ./BookingService
+
+      - name: Build ProfileService Docker image
+        run: docker build -t profileservice:latest ./ProfileService
+
+      - name: Build WorkshiftService Docker image
+        run: docker build -t workshiftservice:latest ./WorkshiftService
+
+      - name: Build YarpGateway Docker image
+        run: docker build -t yarpgateway:latest ./YarpGateway
+
+      - name: Run Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          format: table
+          exit-code: 1
+
+      - name: Run Trivy AuthService image scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: authservice:latest
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          format: table
+          exit-code: 1
+
+      - name: Run Trivy BookingService image scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: bookingservice:latest
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          format: table
+          exit-code: 1
+
+      - name: Run Trivy ProfileService image scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: profileservice:latest
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          format: table
+          exit-code: 1
+
+      - name: Run Trivy WorkshiftService image scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: workshiftservice:latest
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          format: table
+          exit-code: 1
+
+      - name: Run Trivy YarpGateway image scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: yarpgateway:latest
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          format: table
+          exit-code: 1
+
+      - name: Install Syft
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Generate SBOM
+        run: syft . -o cyclonedx-json=sbom.json
+
+      - name: Upload SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
