@@ -1,0 +1,25 @@
+services:
+  grafana:
+    container_name: grafana
+    profiles:
+      - monitoring
+    reservations:
+      memory: 128M
+    limits:
+      memory: 512M
+  prometheus:
+    container_name: prometheus
+    profiles:
+      - monitoring
+    reservations:
+      memory: 256M
+    limits:
+      memory: 1G
+  loki:
+    container_name: loki
+    profiles:
+      - monitoring
+    reservations:
+      memory: 256M
+    limits:
+      memory: 1G

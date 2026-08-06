@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: image-watcher
+  namespace: image-watcher
+
+spec:
+  replicas: 3

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: image-watcher
+  namespace: image-watcher
+
+spec:
+  selector:
+    app: image-watcher
+
+  ports:
+    - port: 80
+      targetPort: 8080

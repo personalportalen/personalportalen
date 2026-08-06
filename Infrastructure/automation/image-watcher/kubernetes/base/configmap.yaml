@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: image-watcher-config
+  namespace: image-watcher
+
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  Seq__Url: http://seq:5341

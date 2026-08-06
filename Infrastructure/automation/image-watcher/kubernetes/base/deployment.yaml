@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: image-watcher
+  namespace: image-watcher
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: image-watcher
+
+  template:
+    metadata:
+      labels:
+        app: image-watcher
+
+    spec:
+      containers:
+        - name: image-watcher
+          image: image-watcher:latest
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - containerPort: 8080
+
+          envFrom:
+            - configMapRef:
+                name: image-watcher-config
