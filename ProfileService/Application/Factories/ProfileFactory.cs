@@ -29,4 +29,20 @@ public static class ProfileFactory
 
         return model;
     }
+
+    public static ProfileSummary CreateProfileSummary(ProfileEntity profile)
+    {
+        if (profile == null)
+            return null!;
+
+        var model = new ProfileSummary
+        {
+            FirstName = profile.FirstName,
+            LastName = profile.LastName,
+            Email = profile.EmailAddress,
+            UserId = profile.UserId
+        };
+
+        return model;
+    }
 }

@@ -3,21 +3,36 @@
   margin: auto 0rem 0rem 0rem;
 }
 
-.login_page form button {
-  margin-top: 3rem;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  height: 58px;
+.login-headers {
+  padding-bottom: 1.8rem;
 }
-
 
 .login_first-header {
   color: #7c7c7c;
 }
 
 .login_input-group {
-  padding-top: 1.5rem;
+  padding-top: 0.5rem;
   display: grid;
-  gap: 0.6rem;
+}
+
+.login_input-group label {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.input-error-wrapper {
+  min-height: 1.5rem;
+}
+
+.input-error-wrapper p {
+  margin-top: 0.1rem;
+}
+
+.login_page form button {
+  margin-top: 1.6rem;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 58px;
 }

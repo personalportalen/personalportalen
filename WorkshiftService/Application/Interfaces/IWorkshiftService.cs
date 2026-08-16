@@ -10,6 +10,7 @@ namespace Application.Interfaces
         Task<ServiceResult> CreateAsync(WorkshiftRegistrationForm form, string userId);
         Task<ServiceResult> DeleteAsync(string id);
         Task<ServiceResult<IEnumerable<Workshift>>> GetAllAsync();
+        Task<ServiceResult<IEnumerable<Workshift>>> GetUnbookedAsync();
         Task<ServiceResult<Workshift>> GetAsync(Expression<Func<WorkshiftEntity, bool>> expression);
         Task<ServiceResult> UpdateAsync(string id, WorkshiftUpdateForm form);
     }

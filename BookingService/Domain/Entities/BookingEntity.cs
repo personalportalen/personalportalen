@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
 namespace Domain.Entities;
+
 public class BookingEntity
 {
     [Key]

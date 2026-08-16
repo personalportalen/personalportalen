@@ -5,6 +5,10 @@ export const getWorkshifts = () => {
   return apiFetch(API_ENDPOINTS.workshift, 'getall');
 };
 
+export const getUnbookedWorkshifts = () => {
+  return apiFetch(API_ENDPOINTS.workshift, 'getunbooked');
+};
+
 export const getWorkshift = (workshiftId) => {
   return apiFetch(API_ENDPOINTS.workshift, workshiftId);
 };

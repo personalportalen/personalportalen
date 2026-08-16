@@ -3,10 +3,14 @@ import './WorkshiftsPage.css';
 import WorkshiftCard from '../components/WorkshiftCard';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthProvider';
-import { deleteWorkshift, getWorkshifts } from '../api';
+import { deleteWorkshift, getWorkshifts, getUnbookedWorkshifts } from '../api';
+import { getAll } from '../../booking/api';
+import { getProfiles } from '../../profile/api';
 
 const WorkshiftsPage = () => {
   const [workshifts, setWorkshifts] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [profiles, setProfiles] = useState([]);
   const { hasAnyRole, isAdmin } = useAuth();
 
   const handleDeleteWorkshift = async (id) => {
@@ -19,17 +23,44 @@ const WorkshiftsPage = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
+  const fetchWorkshifts = async () => {
+    try {
+      if (isAdmin) {
         const workshiftsData = await getWorkshifts();
         setWorkshifts(workshiftsData);
-      } catch (error) {
-        console.error(error);
+      } else {
+        const workshiftsData = await getUnbookedWorkshifts();
+        setWorkshifts(workshiftsData);
       }
-    };
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    fetchData();
+  const fetchBookings = async () => {
+    try {
+      const bookingsData = await getAll();
+      setBookings(bookingsData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchProfiles = async () => {
+    try {
+      const profilesData = await getProfiles();
+      /*       console.log('profilesData length:', profilesData.length);
+      console.log('profilesData:', profilesData); */
+      setProfiles(profilesData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkshifts();
+    fetchBookings();
+    fetchProfiles();
   }, []);
 
   return (
@@ -43,13 +74,31 @@ const WorkshiftsPage = () => {
         )}
       </div>
       <div className="home_content-container">
-        {workshifts.map((workshift) => (
-          <WorkshiftCard
-            key={workshift.id}
-            workshift={workshift}
-            onDelete={handleDeleteWorkshift}
-          />
-        ))}
+        {workshifts.map((workshift) => {
+          const booking = bookings.find(
+            (booking) => booking.workshiftId === workshift.id,
+          );
+
+          const profile = profiles.find(
+            (profile) => profile.userId === booking?.employeeId,
+          );
+
+          console.log('booking employeeId:', booking?.employeeId);
+          console.log(
+            'profile userIds:',
+            profiles.map((p) => p.userId),
+          );
+          return (
+            <WorkshiftCard
+              key={workshift.id}
+              workshift={workshift}
+              booking={booking}
+              profile={profile}
+              onDelete={handleDeleteWorkshift}
+              onBookingComplete={fetchWorkshifts}
+            />
+          );
+        })}
       </div>
     </div>
   );

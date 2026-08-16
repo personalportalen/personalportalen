@@ -1,0 +1,30 @@
+.banner-container {
+  min-height: 2rem;
+}
+
+@media (min-width: 1200px) {
+  .banner-container {
+    max-height: 5rem;
+  }
+}
+
+.banner-container div {
+  position: relative;
+  border-radius: 1rem;
+  display: grid;
+  height: 100%;
+  place-items: center;
+  background-color: #ffd65c;
+  padding-block: 1rem;
+}
+
+.banner-container p {
+  max-width: 80%;
+  text-align: center;
+}
+
+.close-button {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+}

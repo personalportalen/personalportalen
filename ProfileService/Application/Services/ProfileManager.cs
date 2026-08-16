@@ -25,6 +25,19 @@ public class ProfileManager(IProfileRepository profileRepository, IAddressReposi
         return ServiceResult<Profile>.Success(model);
     }
 
+    public async Task<ServiceResult<List<ProfileSummary>>> GetAllProfiles()
+    {
+        var profiles = await _profileRepository.GetAllAsync();
+
+        var models = profiles
+            .Select(ProfileFactory.CreateProfileSummary)
+            .Where(profile => profile != null)
+            .ToList();
+
+        return ServiceResult<List<ProfileSummary>>.Success(models);
+    }
+
+
     public async Task<ServiceResult<ProfileEntity>> CreateProfile(ProfileCreateForm form)
     {
 

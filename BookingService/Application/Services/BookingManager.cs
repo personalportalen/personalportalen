@@ -11,37 +11,40 @@ public class BookingManager(IBookingRepository repository) : IBookingService
 
     public async Task<ServiceResult> CreateAsync(BookingRegistrationForm form)
     {
-        if (form != null)
+        if (form == null)
         {
-            var entity = new BookingEntity
-            {
-                Id = Guid.NewGuid().ToString(),
-                WorkshiftId = form.WorkshiftId,
-                EmployeeId = form.EmployeeId,
-                BookingMadeById = form.BookingMadeById,
-                LastUpdatedById = form.LastUpdatedById,
-                BookingCreated = DateTime.Now,
-                LastUpdated = DateTime.Now,
-            };
-
-            var res = await _repository.AddAsync(entity);
-            if (res.Succeeded)
-            {
-                return new ServiceResult
-                {
-                    Succeeded = true
-                };
-            }
             return new ServiceResult
             {
                 Succeeded = false,
-                Message = res.Error
+                Message = "Entity is null"
+            };
+        }
+
+
+
+        var entity = new BookingEntity
+        {
+            Id = Guid.NewGuid().ToString(),
+            WorkshiftId = form.WorkshiftId,
+            EmployeeId = form.EmployeeId,
+            BookingMadeById = form.BookingMadeById,
+            LastUpdatedById = form.LastUpdatedById,
+            BookingCreated = DateTime.Now,
+            LastUpdated = DateTime.Now,
+        };
+
+        var res = await _repository.AddAsync(entity);
+        if (res.Succeeded)
+        {
+            return new ServiceResult
+            {
+                Succeeded = true
             };
         }
         return new ServiceResult
         {
             Succeeded = false,
-            Message = "Entity is null"
+            Message = res.Error
         };
     }
 
@@ -117,6 +120,17 @@ public class BookingManager(IBookingRepository repository) : IBookingService
             Succeeded = false,
             Message = res.Error
         };
+    }
+
+    public async Task<ServiceResult<IEnumerable<String>>> GetBookedWorkshiftIdsAsync()
+    {
+        var res = await _repository.GetBookedWorkshiftIdsAsync();
+        return new ServiceResult<IEnumerable<String>>
+        {
+            Succeeded = true,
+            Result = res
+        };
+
     }
 
     public async Task<ServiceResult> UpdateAsync(BookingUpdateForm form)

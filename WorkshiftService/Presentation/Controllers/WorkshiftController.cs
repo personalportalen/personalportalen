@@ -43,6 +43,19 @@ public class WorkshiftController(IWorkshiftService workshiftService) : Controlle
 
     }
 
+    [HttpGet("getunbooked")]
+    public async Task<IActionResult> GetUnbooked()
+    {
+
+        var result = await _service.GetUnbookedAsync();
+        if (result.Succeeded)
+        {
+            return Ok(new ApiResponse(true, "Workshifts were fetched", result.Result));
+        }
+        return StatusCode(500);
+
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(string id)
     {

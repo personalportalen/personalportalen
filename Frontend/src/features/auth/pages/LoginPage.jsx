@@ -2,13 +2,15 @@ import './LoginPage.css';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import LoginForm from '../components/LoginForm';
-import loginPhoto from '../../../assets/login_photo.jpg';
+import loginPhoto from '../../../assets/login_photo_web.webp';
+import Banner from '../../../shared/components/Banner';
 
 const LoginPage = () => {
   return (
     <div className="login_page">
       <div className="login_left-side">
-        <LoginForm className="login_form" />
+        <Banner />
+        <LoginForm />
         <div className="no-account_group">
           <p>Har du inget konto än?</p>
           <Link to={'/signup'}>

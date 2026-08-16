@@ -1,3 +1,17 @@
+.wc_level-details {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .wc_level-header {
+    display: none;
+  }
+
+  .wc_level-details {
+    display: block;
+  }
+}
+
 .wc_info-group label {
   font-size: 0.8rem;
   font-weight: 400;
@@ -6,10 +20,12 @@
 
 .wc_info-group p {
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .wc_info-group-flex p {
   font-weight: 600;
+  overflow-wrap: anywhere;
 }
 
 .wc_container {
@@ -26,14 +42,19 @@
 
 .wc_info-group-flex {
   display: flex;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.wc_info-group-flex * {
+  padding-inline: 0.1rem;
 }
 
 .wc_header {
-  display: grid;
-  grid-template-columns: 2fr 3fr 3fr 3fr 1fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   user-select: none;
+  gap: 1rem;
 }
 
 .wc__booking-status {
@@ -45,11 +66,11 @@
 .wc_details {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-top: 1rem;
   border-top: 1px solid #eee;
   padding-top: 1rem;
   animation: fadeIn 0.2s ease-in-out;
+  flex-wrap: wrap;
 }
 
 .wc__chevron {
@@ -63,8 +84,13 @@
 }
 
 .wc_button-container * {
-  padding-inline: 3rem;
   text-decoration: none;
+  min-width: 5rem;
+}
+
+#booking_button {
+  width: 180px;
+  padding: 0;
 }
 
 .rotate {

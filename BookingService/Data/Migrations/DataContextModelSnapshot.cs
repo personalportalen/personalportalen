@@ -47,9 +47,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("WorkshiftId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("WorkshiftId")
+                        .IsUnique();
 
                     b.ToTable("Bookings");
                 });

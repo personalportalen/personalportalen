@@ -139,8 +139,10 @@ const LoginForm = () => {
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <h1 className="login_first-header">Logga in på</h1>
-      <h1>Personalportalen</h1>
+      <div className="login-headers">
+        <h1 className="login_first-header">Logga in på</h1>
+        <h1>Personalportalen</h1>
+      </div>
 
       <div className="login_input-group">
         <label htmlFor="email">Mejladress</label>
@@ -159,11 +161,13 @@ const LoginForm = () => {
           aria-invalid={!!errors.email}
           aria-describedby={errors.email ? 'email-error' : undefined}
         />
-        {touched.email && errors.email && (
-          <p id="email-error" className="input-error">
-            {errors.email}
-          </p>
-        )}
+        <div className="input-error-wrapper">
+          {touched.email && errors.email && (
+            <p id="email-error" className="input-error">
+              {errors.email}
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="login_input-group">
@@ -182,11 +186,13 @@ const LoginForm = () => {
           aria-invalid={!!errors.password}
           aria-describedby={errors.password ? 'password-error' : undefined}
         />
-        {touched.password && errors.password && (
-          <p id="password-error" className="input-error">
-            {errors.password}
-          </p>
-        )}
+        <div className="input-error-wrapper">
+          {touched.password && errors.password && (
+            <p id="password-error" className="input-error">
+              {errors.password}
+            </p>
+          )}
+        </div>
       </div>
       {error && <ErrorMessage message={error} />}
       <button className="button button-prim" type="submit" disabled={loading}>

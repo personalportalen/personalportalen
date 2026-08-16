@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import './BookingCard.css';
 
 const BookingCard = ({ booking }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,43 +17,47 @@ const BookingCard = ({ booking }) => {
     setIsOpen((prev) => !prev);
   };
   return (
-    <div className={`wc_container ${isOpen ? 'open' : ''}`}>
-      <div className="wc_header" onClick={handleToggle}>
-        <div className="wc_info-group">
+    <div className={`bc_container ${isOpen ? 'open' : ''}`}>
+      <div className="bc_header" onClick={handleToggle}>
+        <div className="bc_info-group">
           <p>{formatDate(booking.workshift.starttime)}</p>
         </div>
-        <div className="wc_info-group">
+        <div className="bc_info-group">
           <label>Bokad</label>
 
           <p>{formatTime(booking.bookingCreated)}</p>
         </div>
 
-        <div className="wc_info-group">
+        <div className="bc_info-group">
           <label>Område</label>
           <p>{booking.workshift.area}</p>
         </div>
 
-        <div className="wc_info-group">
+        <div className="bc_info-group bc_level-header">
           <label>Nivå</label>
           <p>{booking.workshift.level}</p>
         </div>
-        <div className="wc__chevron">
+        <div className="bc__chevron">
           <ChevronDown className={isOpen ? 'rotate' : ''} />
         </div>
       </div>
 
       {isOpen && (
-        <div className="wc_details">
-          <div className="wc_info-group">
+        <div className="bc_details">
+          <div className="bc_info-group bc_level-details">
+            <label>Nivå</label>
+            <p>{booking.workshift.level}</p>
+          </div>
+          <div className="bc_info-group">
             <label>{booking.workshift.level}</label>
             <p>{booking.workshift.employeeId || 'Ej tilldelad'}</p>
           </div>
-          <div className="wc_info-group">
+          <div className="bc_info-group">
             <label>Bokad</label>
             <p>{formatDate(booking.bookingCreated)}</p>
           </div>
 
-          <div className="wc_info-group">
+          <div className="bc_info-group">
             <label>Boknings-ID</label>
             <p>{booking.id}</p>
           </div>

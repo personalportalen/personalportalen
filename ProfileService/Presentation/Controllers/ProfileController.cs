@@ -31,6 +31,20 @@ public class ProfileController(IProfileService profileService) : ControllerBase
         return StatusCode(result.StatusCode, new ApiResponse(false, "No user found", result));
     }
 
+    [Authorize(Roles = "Admin")]
+    [HttpGet("getall")]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await _profileService.GetAllProfiles();
+        if (result.Succeeded)
+        {
+            return Ok(new ApiResponse(true, "Profiles were found", result.Data));
+        }
+
+        return StatusCode(result.StatusCode, new ApiResponse(false, "No profiles found", result));
+
+    }
+
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ProfileCreateForm form)

@@ -45,6 +45,11 @@ public class BookingController(IBookingService bookingService) : ControllerBase
             return Ok(new ApiResponse(true, "Bookings were successfully fetched", res.Result));
         }
 
+        if (res.Message == "Arbetspasset är redan bokat.")
+        {
+            return Conflict(res.Message);
+        }
+
         return StatusCode(500);
     }
 
@@ -83,6 +88,20 @@ public class BookingController(IBookingService bookingService) : ControllerBase
             return StatusCode(500);
         }
         return BadRequest();
+    }
+
+    //[Authorize]
+    [HttpGet("booked")]
+    public async Task<IActionResult> GetBooked()
+    {
+        var res = await _bookingService.GetBookedWorkshiftIdsAsync();
+
+        if (!res.Succeeded)
+        {
+            return StatusCode(500);
+        }
+
+        return Ok(res.Result);
     }
 
     [Authorize]

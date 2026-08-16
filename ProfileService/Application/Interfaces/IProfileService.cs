@@ -10,6 +10,7 @@ namespace Application.Interfaces
         Task<ServiceResult<Profile>> GetProfile(string userId);
         Task<ServiceResult<ProfileEntity>> UpdateProfile(string userId, ProfileUpdateForm form);
         Task<ServiceResult<ProfileEntity>> CompleteProfile(string userId, CompleteProfileForm form);
+        Task<ServiceResult<List<ProfileSummary>>> GetAllProfiles();
 
     }
 }

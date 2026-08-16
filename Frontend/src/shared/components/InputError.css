@@ -1,0 +1,8 @@
+.input-error-shared p {
+  margin-top: 0rem;
+}
+
+.min-height {
+  min-height: 1.3rem; /*If this is less then the 
+  error message pushes other elements down */
+}

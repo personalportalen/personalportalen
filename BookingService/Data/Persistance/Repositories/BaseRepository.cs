@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Application.Models;
 using Infrastructure.Persistance.Context;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -22,6 +23,16 @@ public class BaseRepository<TEntity>(DataContext context) : IBaseRepository<TEnt
                 {
 
                     Succeeded = true,
+                };
+            }
+            catch (DbUpdateException ex) when (
+            ex.InnerException is SqlException sqlException &&
+            (sqlException.Number == 2601 || sqlException.Number == 2627))
+            {
+                return new RepositoryResult
+                {
+                    Succeeded = false,
+                    Error = "Arbetspasset är redan bokat."
                 };
             }
             catch (Exception ex)

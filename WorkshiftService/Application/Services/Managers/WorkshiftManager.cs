@@ -4,10 +4,11 @@ using Application.Models;
 using Domain.Entities;
 using System.Linq.Expressions;
 
-namespace Application.Services;
-public class WorkshiftManager(IWorkshiftRepository workshiftRepository) : IWorkshiftService
+namespace Application.Services.Managers;
+public class WorkshiftManager(IWorkshiftRepository workshiftRepository, IBookingClient bookingClient) : IWorkshiftService
 {
     private readonly IWorkshiftRepository _repository = workshiftRepository;
+    private readonly IBookingClient _bookingClient = bookingClient;
 
     public async Task<ServiceResult> CreateAsync(WorkshiftRegistrationForm form, string userId)
     {
@@ -56,9 +57,17 @@ public class WorkshiftManager(IWorkshiftRepository workshiftRepository) : IWorks
         try
         {
             var entities = await _repository.GetAllAsync();
-            if (entities.Succeeded)
+
+            if (!entities.Succeeded)
             {
-                var workshifts = entities?.Result?.Select(x => new Workshift
+                return new ServiceResult<IEnumerable<Workshift>>
+                {
+                    Succeeded = false
+                };
+            }
+
+            var workshifts = entities.Result
+                .Select(x => new Workshift
                 {
                     Id = x.Id,
                     Area = x.Area,
@@ -70,18 +79,58 @@ public class WorkshiftManager(IWorkshiftRepository workshiftRepository) : IWorks
                     AddedTime = x.AddedTime
                 });
 
-                return new ServiceResult<IEnumerable<Workshift>>
-                {
-                    Succeeded = true,
-                    Result = workshifts
-                };
-            }
-
+            return new ServiceResult<IEnumerable<Workshift>>
+            {
+                Succeeded = true,
+                Result = workshifts
+            };
+        }
+        catch (Exception ex)
+        {
             return new ServiceResult<IEnumerable<Workshift>>
             {
                 Succeeded = false,
+                Message = ex.Message
             };
+        }
+    }
 
+    public async Task<ServiceResult<IEnumerable<Workshift>>> GetUnbookedAsync()
+    {
+        try
+        {
+            var entities = await _repository.GetAllAsync();
+
+            if (!entities.Succeeded)
+            {
+                return new ServiceResult<IEnumerable<Workshift>>
+                {
+                    Succeeded = false
+                };
+            }
+
+            var bookedWorkshiftIds =
+                await _bookingClient.GetBookedWorkshiftIdsAsync();
+
+            var workshifts = entities.Result
+                .Where(x => !bookedWorkshiftIds.Contains(x.Id))
+                .Select(x => new Workshift
+                {
+                    Id = x.Id,
+                    Area = x.Area,
+                    Level = x.Level,
+                    Starttime = x.Starttime,
+                    Endtime = x.Endtime,
+                    EmployeeId = x.EmployeeId,
+                    AddedByUserId = x.AddedByUserId,
+                    AddedTime = x.AddedTime
+                });
+
+            return new ServiceResult<IEnumerable<Workshift>>
+            {
+                Succeeded = true,
+                Result = workshifts
+            };
         }
         catch (Exception ex)
         {

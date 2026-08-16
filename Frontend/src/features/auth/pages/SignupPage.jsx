@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 import SignupForm from '../components/SignupForm';
-import signupPhoto from '../../../assets/register.jpg';
+import signupPhoto from '../../../assets/register_web.png';
 import { ROUTES } from '../../../app/routes';
 
 const SignupPage = () => {

@@ -1,5 +1,6 @@
 using Application.Interfaces;
-using Application.Services;
+using Application.Services.Clients;
+using Application.Services.Managers;
 using Application.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -27,6 +28,12 @@ builder.Services.AddDbContext<DataContext>(x =>
 
 builder.Services.AddScoped<IWorkshiftRepository, WorkshiftRepository>();
 builder.Services.AddScoped<IWorkshiftService, WorkshiftManager>();
+builder.Services.AddHttpClient<IBookingClient, BookingClient>(client =>
+{
+    client.BaseAddress = new Uri(
+        builder.Configuration["Services:BookingService"]!);
+});
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

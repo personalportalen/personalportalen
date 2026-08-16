@@ -1,0 +1,107 @@
+.bc_level-details {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .bc_level-header {
+    display: none;
+  }
+
+  .bc_level-details {
+    display: block;
+  }
+}
+
+.bc_info-group label {
+  font-size: 0.8rem;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.bc_info-group p {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.bc_info-group-flex p {
+  font-weight: 600;
+}
+
+.bc_container {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  max-width: 100%;
+}
+
+.bc_container.open {
+  background-color: #f9f9f9;
+}
+
+.bc_info-group-flex {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.bc_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+  gap: 1rem;
+}
+
+.bc__booking-status {
+  font-size: 0.7rem;
+  font-weight: 600;
+  align-self: center;
+}
+
+.bc_details {
+  display: flex;
+  margin-top: 1rem;
+  border-top: 1px solid #eee;
+  padding-top: 1rem;
+  justify-content: space-between;
+  animation: fadeIn 0.2s ease-in-out;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.bc_details * {
+  padding-right: 1.2rem;
+  padding-bottom: 0.6rem;
+}
+
+.bc__chevron {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bc_button-container {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.bc_button-container * {
+  padding-inline: 3rem;
+  text-decoration: none;
+}
+
+.rotate {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

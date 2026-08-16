@@ -5,11 +5,18 @@ import { createBooking } from '../../booking/api';
 import { ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const WorkshiftCard = ({ workshift, onDelete }) => {
+const WorkshiftCard = ({
+  workshift,
+  onDelete,
+  onBookingComplete,
+  booking,
+  profile,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [unConfirmed, setUnConfirmed] = useState(false);
   const { isAuthenticated, hasRole } = useAuth();
   const [bookingSucceeded, setBookingSucceeded] = useState(false);
+  const [bookingError, setBookingError] = useState('');
 
   const formatTime = (time) => time?.slice(11, 16).replace(':', '.');
   const formatDate = (date) => {
@@ -33,8 +40,13 @@ const WorkshiftCard = ({ workshift, onDelete }) => {
       await createBooking({ workshiftId: workshift.id });
       setBookingSucceeded(true);
     } catch (err) {
-      console.error(err);
+      if (err.status === 409) {
+        setBookingError('Arbetspasset är redan bokat.');
+      } else {
+        console.error(err);
+      }
     }
+    await onBookingComplete();
     setUnConfirmed(false);
   };
 
@@ -43,6 +55,7 @@ const WorkshiftCard = ({ workshift, onDelete }) => {
       setBookingSucceeded(false);
     }, 3000);
 
+    console.log('profile', profile);
     return () => clearTimeout(timer);
   }, [bookingSucceeded]);
 
@@ -63,7 +76,7 @@ const WorkshiftCard = ({ workshift, onDelete }) => {
           <p>{workshift.area}</p>
         </div>
 
-        <div className="wc_info-group">
+        <div className="wc_info-group wc_level-header">
           <label>Nivå</label>
           <p>{workshift.level}</p>
         </div>
@@ -74,9 +87,17 @@ const WorkshiftCard = ({ workshift, onDelete }) => {
 
       {isOpen && (
         <div className="wc_details">
+          <div className="wc_info-group wc_level-details">
+            <label>Nivå</label>
+            <p>{workshift.level}</p>
+          </div>
           <div className="wc_info-group">
             <label>{workshift.level}</label>
-            <p>{workshift.employeeId || 'Ej tilldelad'}</p>
+            <p>
+              {profile
+                ? `${profile.firstName + ' ' + profile?.lastName}`
+                : 'Ej tilldelad'}
+            </p>
           </div>
 
           <div className="wc_button-container">
@@ -100,12 +121,17 @@ const WorkshiftCard = ({ workshift, onDelete }) => {
 
             {isAuthenticated && !hasRole('Admin') && (
               <>
-                <p className="wc__booking-status">
-                  {bookingSucceeded ? 'Bokning genomförd!' : ''}
-                </p>
+                {bookingSucceeded && (
+                  <p className="wc__booking-status">Bokning genomförd!</p>
+                )}
+                {bookingError && (
+                  <p className="wc__booking-status">{bookingError}</p>
+                )}
+
                 <button
                   onClick={unConfirmed ? confirmBook : handleBook}
                   className="button button-prim"
+                  id="booking_button"
                 >
                   {unConfirmed ? 'Bekräfta bokning' : 'Boka'}
                 </button>

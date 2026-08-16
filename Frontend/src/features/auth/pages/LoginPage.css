@@ -4,6 +4,19 @@
   overflow: hidden;
 }
 
+@media (max-width: 1200px) {
+  .login_page {
+    grid-template-columns: 1fr;
+    padding-right: 3rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .login_page {
+    padding-right: 1rem;
+  }
+}
+
 .login_page form h1 {
   letter-spacing: -3%;
 }
@@ -16,12 +29,47 @@
   border-radius: 12px;
 }
 
+@media (max-width: 1200px) {
+  .login_page img {
+    display: none;
+  }
+}
+
 .login_left-side {
   display: grid;
-  grid-template-rows: 2fr 1fr;
-  max-width: 60%;
+  max-width: 100%;
   padding-left: 3rem;
   height: 100%;
+  padding-top: 1rem;
+}
+
+@media (max-width: 1200px) {
+  .login_left-side {
+    gap: 5rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .login_left-side {
+    padding-left: 1rem;
+  }
+}
+
+.login_left-side form {
+  max-width: 60%;
+  padding-bottom: 5rem;
+}
+
+@media (max-width: 900px) {
+  .login_left-side form {
+    max-width: 80%;
+  }
+}
+
+@media (max-width: 600px) {
+  .login_left-side form {
+    max-width: 90%;
+  }
 }
 
 .no-account_group {
@@ -45,4 +93,11 @@
 .login_icon_arrowright {
   height: 16px;
   width: 16px;
+}
+
+.login-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }

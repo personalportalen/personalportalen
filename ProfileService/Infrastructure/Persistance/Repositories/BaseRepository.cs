@@ -65,20 +65,13 @@ public abstract class BaseRepository<TEntity>(DataContext dataContext) : IBaseRe
         }
     }
 
-    public virtual async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>>? expression = null)
+    public virtual async Task<List<TEntity>> GetAllAsync()
     {
         try
         {
-            if (expression != null)
-            {
-                var entities = await _dbSet.Where(expression).ToListAsync();
-                return entities;
-            }
-            else
-            {
-                var entities = await _dbSet.ToListAsync();
-                return entities;
-            }
+            var entities = await _dbSet.ToListAsync();
+
+            return entities;   
         }
         catch (Exception ex)
         {

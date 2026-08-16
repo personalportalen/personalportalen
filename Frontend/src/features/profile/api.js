@@ -7,6 +7,10 @@ export async function getCurrentUserProfile() {
   });
 }
 
+export async function getProfiles() {
+  return apiFetch(API_ENDPOINTS.profile, 'getall');
+}
+
 export async function updateProfile(payload) {
   return apiFetch(API_ENDPOINTS.profile, 'update', {
     method: 'PUT',

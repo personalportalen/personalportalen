@@ -3,6 +3,8 @@ import { useAuth } from '../../../context/AuthProvider';
 import { ArrowRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { updateProfile } from '../api';
+import InputField from '../../../shared/components/InputField';
+import './ProfileUpdateForm.css';
 
 const ProfileUpdateForm = () => {
   const navigate = useNavigate();
@@ -282,174 +284,143 @@ const ProfileUpdateForm = () => {
   const profile = userProfile?.data || userProfile;
 
   return (
-    <form className="standard-form" onSubmit={handleSubmit} noValidate>
-      <div className="standard-form_input-group">
-        <label htmlFor="email">Mejladress</label>
-        <input
-          id="email"
-          type="email"
-          disabled
-          placeholder="Email"
-          value={profile?.email || ''}
-          autoComplete="email"
-          className="input"
-        />
-      </div>
+    <form className="" onSubmit={handleSubmit} noValidate>
+      <InputField
+        label="Mejladress"
+        id="email"
+        type="email"
+        disabled
+        placeholder="Email"
+        value={profile?.email || ''}
+        autoComplete="email"
+        className="full-width"
+      />
 
-      <div className="standard-form_input-group-flex">
-        <label htmlFor="first-name">Namn</label>
-        <div>
-          <div>
-            <input
-              id="first-name"
-              className="input"
-              type="text"
-              name="firstName"
-              placeholder="Förnamn"
-              autoComplete="given-name"
-              disabled={loading}
-              value={form.firstName}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              required
-              maxLength={50}
-              aria-invalid={!!errors.firstName}
-              aria-describedby={
-                errors.firstName ? 'first-name-error' : undefined
-              }
-            />
-            {touched.firstName && errors.firstName && (
-              <p id="first-name-error" className="input-error">
-                {errors.firstName}
-              </p>
-            )}
-          </div>
-          <div>
-            <input
-              id="last-name"
-              className="input"
-              type="text"
-              name="lastName"
-              placeholder="Efternamn"
-              autoComplete="family-name"
-              disabled={loading}
-              value={form.lastName}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              required
-              maxLength={50}
-              aria-invalid={!!errors.lastName}
-              aria-describedby={errors.lastName ? 'last-name-error' : undefined}
-            />
-            {touched.lastName && errors.lastName && (
-              <p id="last-name-error" className="input-error">
-                {errors.lastName}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
+      <InputField
+        label="Namn"
+        id="first-name"
+        className="input"
+        type="text"
+        name="firstName"
+        placeholder="Förnamn"
+        autoComplete="given-name"
+        disabled={loading}
+        value={form.firstName}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        required
+        maxLength={50}
+        aria-invalid={!!errors.firstName}
+        aria-describedby={errors.firstName ? 'first-name-error' : undefined}
+        touched={touched.firstName}
+        errorMessage={errors.firstName}
+        errorClassName="input-error-shared"
+      />
 
-      <div className="standard-form_input-group">
-        <label htmlFor="phone-number">Telefon</label>
-        <input
-          id="phone-number"
-          className="input"
-          type="tel"
-          name="phoneNumber"
-          placeholder="Telefonnummer"
-          autoComplete="tel"
-          inputMode="tel"
-          disabled={loading}
-          value={form.phoneNumber}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          aria-invalid={!!errors.phoneNumber}
-          aria-describedby={
-            errors.phoneNumber ? 'phone-number-error' : undefined
-          }
-        />
-        {touched.phoneNumber && errors.phoneNumber && (
-          <p id="phone-number-error" className="input-error">
-            {errors.phoneNumber}
-          </p>
-        )}
-      </div>
+      <InputField
+        invisibleLabel={true}
+        id="last-name"
+        className="input"
+        type="text"
+        name="lastName"
+        placeholder="Efternamn"
+        autoComplete="family-name"
+        disabled={loading}
+        value={form.lastName}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        required
+        maxLength={50}
+        aria-invalid={!!errors.lastName}
+        aria-describedby={errors.lastName ? 'last-name-error' : undefined}
+        touched={touched.lastName}
+        errorMessage={errors.lastName}
+        errorClassName="input-error-shared"
+      />
 
-      <div className="standard-form_input-group-flex">
-        <label htmlFor="street">Adress</label>
+      <InputField
+        label="Telefon"
+        id="phone-number"
+        className="full-width"
+        type="tel"
+        name="phoneNumber"
+        placeholder="Telefonnummer"
+        autoComplete="tel"
+        inputMode="tel"
+        disabled={loading}
+        value={form.phoneNumber}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        aria-invalid={!!errors.phoneNumber}
+        aria-describedby={errors.phoneNumber ? 'phone-number-error' : undefined}
+        touched={touched.phoneNumber}
+        errorMessage={errors.phoneNumber}
+        errorClassName="input-error-shared"
+      />
 
-        <input
-          id="street"
-          className="input"
-          type="text"
-          name="street"
-          placeholder="Gata"
-          autoComplete="street-address"
-          disabled={loading}
-          value={form.address.street}
-          onChange={handleAddressChange}
-          onBlur={handleAddressBlur}
-          aria-invalid={!!errors.street}
-          aria-describedby={errors.street ? 'street-error' : undefined}
-        />
-        {touched.street && errors.street && (
-          <p id="street-error" className="input-error">
-            {errors.street}
-          </p>
-        )}
+      <InputField
+        label="Adress"
+        id="street"
+        className="full-width"
+        type="text"
+        name="street"
+        placeholder="Gata"
+        autoComplete="street-address"
+        disabled={loading}
+        value={form.address.street}
+        onChange={handleAddressChange}
+        onBlur={handleAddressBlur}
+        aria-invalid={!!errors.street}
+        aria-describedby={errors.street ? 'street-error' : undefined}
+        touched={touched.street}
+        errorMessage={errors.street}
+        errorClassName="input-error-shared"
+      />
 
-        <div>
-          <div>
-            <input
-              id="zip-code"
-              className="input"
-              type="text"
-              name="zipCode"
-              placeholder="Postnummer"
-              autoComplete="postal-code"
-              inputMode="numeric"
-              disabled={loading}
-              value={form.address.zipCode}
-              onChange={handleAddressChange}
-              onBlur={handleAddressBlur}
-              aria-invalid={!!errors.zipCode}
-              aria-describedby={errors.zipCode ? 'zip-code-error' : undefined}
-            />
-            {touched.zipCode && errors.zipCode && (
-              <p id="zip-code-error" className="input-error">
-                {errors.zipCode}
-              </p>
-            )}
-          </div>
+      <InputField
+        id="zip-code"
+        className="input"
+        type="text"
+        name="zipCode"
+        placeholder="Postnummer"
+        autoComplete="postal-code"
+        inputMode="numeric"
+        disabled={loading}
+        value={form.address.zipCode}
+        onChange={handleAddressChange}
+        onBlur={handleAddressBlur}
+        aria-invalid={!!errors.zipCode}
+        aria-describedby={errors.zipCode ? 'zip-code-error' : undefined}
+        touched={touched.zipCode}
+        errorMessage={errors.zipCode}
+        errorClassName="input-error-shared"
+      />
 
-          <div>
-            <input
-              id="city"
-              className="input"
-              type="text"
-              name="city"
-              placeholder="Stad"
-              autoComplete="address-level2"
-              disabled={loading}
-              value={form.address.city}
-              onChange={handleAddressChange}
-              onBlur={handleAddressBlur}
-              aria-invalid={!!errors.city}
-              aria-describedby={errors.city ? 'city-error' : undefined}
-            />
-            {touched.city && errors.city && (
-              <p id="city-error" className="input-error">
-                {errors.city}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
+      <InputField
+        id="city"
+        className="input"
+        type="text"
+        name="city"
+        placeholder="Stad"
+        autoComplete="address-level2"
+        disabled={loading}
+        value={form.address.city}
+        onChange={handleAddressChange}
+        onBlur={handleAddressBlur}
+        aria-invalid={!!errors.city}
+        aria-describedby={errors.city ? 'city-error' : undefined}
+        touched={touched.city}
+        errorMessage={errors.city}
+        errorClassName="input-error-shared"
+      />
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      <button disabled={loading} type="submit" className="button button-prim">
+      <button
+        disabled={loading}
+        type="submit"
+        className="button button-prim full-width"
+      >
         {loading ? 'Uppdaterar...' : 'Uppdatera'}
         {!loading && <ArrowRight className="account_icon_arrow" />}
       </button>

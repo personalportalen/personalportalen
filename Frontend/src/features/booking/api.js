@@ -5,6 +5,10 @@ export async function getBookingsByUserId() {
   return apiFetch(API_ENDPOINTS.booking, 'getallbyuserid');
 }
 
+export async function getAll() {
+  return apiFetch(API_ENDPOINTS.booking, 'getall');
+}
+
 export const createBooking = (payload) => {
   return apiFetch(API_ENDPOINTS.booking, 'create', {
     method: 'POST',

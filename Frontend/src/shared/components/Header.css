@@ -4,6 +4,17 @@
   margin-block: 1rem;
 }
 
+@media (max-width: 900px) {
+  .header_container {
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 1rem;
+  }
+  .empty-div {
+    display: none;
+  }
+}
+
 .header_container * {
   text-decoration: none;
 }
@@ -11,6 +22,12 @@
 .header_midd-section {
   display: flex;
   gap: 1.8rem;
+}
+
+@media (max-width: 900px) {
+  .header_midd-section {
+    display: none;
+  }
 }
 
 .header_midd-section * {

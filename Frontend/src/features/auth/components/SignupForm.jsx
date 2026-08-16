@@ -182,8 +182,10 @@ const SignupForm = () => {
 
   return (
     <form onSubmit={handleSubmit} noValidate>
-      <h1 className="login_first-header">Välkommen</h1>
-      <h1>Registrera ett nytt konto</h1>
+      <div className="signup-headers">
+        <h1 className="login_first-header">Välkommen</h1>
+        <h1>Registrera ett nytt konto</h1>
+      </div>
 
       <div className="signup_input-group">
         <label htmlFor="email">Mejladress</label>
@@ -202,11 +204,13 @@ const SignupForm = () => {
           aria-invalid={!!errors.email}
           aria-describedby={errors.email ? 'email-error' : undefined}
         />
-        {touched.email && errors.email && (
-          <p id="email-error" className="input-error">
-            {errors.email}
-          </p>
-        )}
+        <div className="signup-input-error-wrapper">
+          {touched.email && errors.email && (
+            <p id="email-error" className="input-error">
+              {errors.email}
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="signup_input-group">
@@ -225,11 +229,13 @@ const SignupForm = () => {
           aria-invalid={!!errors.password}
           aria-describedby={errors.password ? 'password-error' : undefined}
         />
-        {touched.password && errors.password && (
-          <p id="password-error" className="input-error">
-            {errors.password}
-          </p>
-        )}
+        <div className="signup-input-error-wrapper">
+          {touched.password && errors.password && (
+            <p id="password-error" className="input-error">
+              {errors.password}
+            </p>
+          )}
+        </div>
       </div>
 
       <div className="signup_input-group">
@@ -254,11 +260,13 @@ const SignupForm = () => {
             errors.confirmPassword ? 'confirm-password-error' : undefined
           }
         />
-        {touched.confirmPassword && errors.confirmPassword && (
-          <p id="confirm-password-error" className="input-error">
-            {errors.confirmPassword}
-          </p>
-        )}
+        <div className="signup-input-error-wrapper">
+          {touched.confirmPassword && errors.confirmPassword && (
+            <p id="confirm-password-error" className="input-error">
+              {errors.confirmPassword}
+            </p>
+          )}
+        </div>
       </div>
 
       {error && <ErrorMessage message={error} />}

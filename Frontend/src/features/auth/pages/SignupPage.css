@@ -5,6 +5,12 @@
   overflow: hidden;
 }
 
+@media (max-width: 1200px) {
+  .signup_page {
+    grid-template-columns: 1fr;
+  }
+}
+
 .signup_page form h1 {
   letter-spacing: -3%;
 }
@@ -17,12 +23,24 @@
   border-radius: 12px;
 }
 
+@media (max-width: 1200px) {
+  .signup_page img {
+    display: none;
+  }
+}
+
 .signup_left-side {
   display: grid;
   grid-template-rows: 3fr 1fr;
   max-width: 60%;
   padding-left: 3rem;
   height: 100%;
+}
+
+@media (max-width: 900px) {
+  .signup_left-side {
+    max-width: 80%;
+  }
 }
 
 .already-account_group {

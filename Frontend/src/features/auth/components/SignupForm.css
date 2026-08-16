@@ -3,27 +3,34 @@
   margin: auto 0rem 0rem 0rem;
 }
 
-.signup_page form button {
-  margin-top: 3rem;
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  height: 58px;
+.signup-headers {
+  padding-bottom: 1.7rem;
 }
-
 
 .signup_first-header {
   color: #7c7c7c;
 }
 
 .signup_input-group {
-  padding-top: 1.5rem;
+  padding-top: 0.6rem;
   display: grid;
-  gap: 0.6rem;
 }
 
 .signup_input-group label {
   font-weight: 500;
   font-size: 16px;
 }
+.signup-input-error-wrapper {
+  min-height: 1.5rem;
+}
+.signup-input-error-wrapper p {
+  margin-top: 0.1rem;
+}
 
+.signup_page form button {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 58px;
+}

@@ -1,0 +1,25 @@
+.update-profile {
+  margin: auto 0;
+}
+
+.update-profile form {
+  padding-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.update_icon_arrow {
+  height: 17px;
+  width: 17px;
+}
+
+.update-profile form button {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
