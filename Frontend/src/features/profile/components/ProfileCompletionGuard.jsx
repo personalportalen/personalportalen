@@ -4,12 +4,18 @@ import { ROUTES } from '../../../app/routes';
 import { useAuth } from '../../../context/AuthProvider';
 
 const ProfileCompletionGuard = () => {
-  const { userProfile, isProfileComplete, isReadyForGuards } = useAuth();
+  const { userProfile, isProfileComplete, isReadyForGuards, isAdmin } =
+    useAuth();
 
   const location = useLocation();
 
   if (!isReadyForGuards) {
     return <CustomLoader text="Kontrollerar profil..." />;
+  }
+
+  if (isAdmin()) {
+    console.log('aaaaaadmin');
+    return <Outlet />;
   }
 
   if (!userProfile) {

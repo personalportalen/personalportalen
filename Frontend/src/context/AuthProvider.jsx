@@ -58,6 +58,11 @@ export function AuthProvider({ children }) {
       const userData = await getMe();
       setUser(userData);
 
+      if (userData.roles?.includes('Admin')) {
+        setUserProfile(null);
+        return;
+      }
+
       try {
         const profileData = await getCurrentUserProfileWithRetry();
         setUserProfile(profileData);

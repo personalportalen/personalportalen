@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import PopupContext from './PopupContext';
 
-const POPUP_DELAY = 2_000;
+const POPUP_DELAY = 10_000;
 
 const PopupProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);

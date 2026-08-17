@@ -139,6 +139,8 @@ using (var scope = app.Services.CreateScope())
 
     var context = services.GetRequiredService<DataContext>();
 
+    await context.Database.MigrateAsync();
+
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
 

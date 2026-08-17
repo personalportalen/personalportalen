@@ -38,15 +38,17 @@ const Header = () => {
             {isAdmin() ? (
               ''
             ) : (
-              <Link to={ROUTES.BOOKINGS}>
-                <CalendarCheck2 className="header_icon" />
-                Schema
-              </Link>
+              <>
+                <Link to={ROUTES.BOOKINGS}>
+                  <CalendarCheck2 className="header_icon" />
+                  Schema
+                </Link>
+                <Link to={ROUTES.ACCOUNT}>
+                  <User className="header_icon" />
+                  Mitt konto
+                </Link>
+              </>
             )}
-            <Link to={ROUTES.ACCOUNT}>
-              <User className="header_icon" />
-              {isAdmin ? 'Admin-kontot' : 'Mitt konto'}
-            </Link>
           </div>
           <Link to={ROUTES.HOME} className="header__right-secion">
             <button className="button" onClick={handleLogout}>
