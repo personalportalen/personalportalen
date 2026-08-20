@@ -34,7 +34,61 @@ jobs:
             -t ghcr.io/${{ github.repository_owner }}/personalportalen/authservice:${{ github.sha }} \
             ./AuthService
 
+      - name: Build ProfileService image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/personalportalen/profileservice:${{ github.sha }} \
+            ./ProfileService
+
+      - name: Build BookingService image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/personalportalen/bookingservice:${{ github.sha }} \
+            ./BookingService
+
+      - name: Build WorkshiftService image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/personalportalen/workshiftservice:${{ github.sha }} \
+            ./WorkshiftService
+
+      - name: Build Gateway image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/personalportalen/gateway:${{ github.sha }} \
+            ./YarpGateway
+
       - name: Push AuthService image
         run: |
           docker push \
             ghcr.io/${{ github.repository_owner }}/personalportalen/authservice:${{ github.sha }}
+
+      - name: Push ProfileService image
+        run: |
+          docker push \
+            ghcr.io/${{ github.repository_owner }}/personalportalen/profileservice:${{ github.sha }}
+
+      - name: Push BookingService image
+        run: |
+          docker push \
+            ghcr.io/${{ github.repository_owner }}/personalportalen/bookingservice:${{ github.sha }}
+
+      - name: Push WorkshiftService image
+        run: |
+          docker push \
+            ghcr.io/${{ github.repository_owner }}/personalportalen/workshiftservice:${{ github.sha }}
+
+      - name: Push Gateway image
+        run: |
+          docker push \
+            ghcr.io/${{ github.repository_owner }}/personalportalen/gateway:${{ github.sha }}
+
+      - name: Deploy to VM
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            echo "Connected to VM"
+            whoami
