@@ -2,6 +2,7 @@
 using Domain.Entities;
 
 namespace Application.Factories;
+
 public static class ProfileFactory
 {
     public static Profile CreateProfileModel(ProfileEntity profile)

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Application.Dtos;
+
 public class ProfileCreateForm
 {
     [Required]

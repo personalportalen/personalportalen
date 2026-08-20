@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Text;
 
 namespace Application.Services;
+
 public class AuthManager(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IJwtTokenHelper jwtTokenHelper, IEventPublisher eventPublisher) : IAuthService
 {
     private readonly UserManager<AppUser> _userManager = userManager;
@@ -22,42 +23,42 @@ public class AuthManager(UserManager<AppUser> userManager, SignInManager<AppUser
 
     public async Task<ServiceResult<SignUpResponseDto>> SignUpAsync(SignUpRequestDto request)
     {
-            var existingAccount = await _userManager.FindByEmailAsync(request.Email);
-            if (existingAccount != null)
-                return ServiceResult<SignUpResponseDto>.Fail("Email is already in use", 409);
+        var existingAccount = await _userManager.FindByEmailAsync(request.Email);
+        if (existingAccount != null)
+            return ServiceResult<SignUpResponseDto>.Fail("Email is already in use", 409);
 
-            var newUser = new AppUser
-            {
-                UserName = request.Email,
-                Email = request.Email,
-                EmailConfirmed = true
-            };
+        var newUser = new AppUser
+        {
+            UserName = request.Email,
+            Email = request.Email,
+            EmailConfirmed = true
+        };
 
-            var result = await _userManager.CreateAsync(newUser, request.Password);
+        var result = await _userManager.CreateAsync(newUser, request.Password);
 
-            if (!result.Succeeded)
-                return result.FromIdentityResult<SignUpResponseDto>("User creation failed");
+        if (!result.Succeeded)
+            return result.FromIdentityResult<SignUpResponseDto>("User creation failed");
 
-            await _userManager.AddToRoleAsync(newUser, "Anställd");
+        await _userManager.AddToRoleAsync(newUser, "Anställd");
 
-            await _eventPublisher.PublishUserCreated(new UserCreatedEvent
-            {
-                UserId = newUser.Id,
-                Email = newUser.Email!,
-                CreatedAt = DateTime.UtcNow
-            });
+        await _eventPublisher.PublishUserCreated(new UserCreatedEvent
+        {
+            UserId = newUser.Id,
+            Email = newUser.Email!,
+            CreatedAt = DateTime.UtcNow
+        });
 
-            return ServiceResult<SignUpResponseDto>.Success(new SignUpResponseDto 
-                { 
-                    UserId = newUser.Id 
-                });
+        return ServiceResult<SignUpResponseDto>.Success(new SignUpResponseDto
+        {
+            UserId = newUser.Id
+        });
     }
 
     public async Task<ServiceResult<SignInResponseDto>> SignInAsync(SignInRequestDto request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
-            return  ServiceResult<SignInResponseDto>.Fail("User not found", 404);
+            return ServiceResult<SignInResponseDto>.Fail("User not found", 404);
 
         var result = await _signInManager.PasswordSignInAsync(user, request.Password, isPersistent: false, lockoutOnFailure: false);
         if (!result.Succeeded)
@@ -66,16 +67,17 @@ public class AuthManager(UserManager<AppUser> userManager, SignInManager<AppUser
         var token = await _jwtTokenHelper.GenerateToken(user, _configuration, _userManager);
         var refreshToken = _jwtTokenHelper.GenerateRefreshToken(user, _configuration);
 
-        return ServiceResult<SignInResponseDto>.Success(new SignInResponseDto 
-        { 
-            Token = token, RefreshToken = refreshToken 
-        });        
+        return ServiceResult<SignInResponseDto>.Success(new SignInResponseDto
+        {
+            Token = token,
+            RefreshToken = refreshToken
+        });
     }
 
     public async Task<ServiceResult> SignOutAsync()
     {
-            await _signInManager.SignOutAsync();
-            return ServiceResult.Success();
+        await _signInManager.SignOutAsync();
+        return ServiceResult.Success();
     }
 
     public async Task<ServiceResult<SignInResponseDto>> RefreshTokenAsync(string refreshToken)
@@ -110,7 +112,7 @@ public class AuthManager(UserManager<AppUser> userManager, SignInManager<AppUser
             return ServiceResult<SignInResponseDto>.Fail("Invalid refresh token", 401);
         }
 
-        var userId = 
+        var userId =
             principal.FindFirstValue(ClaimTypes.NameIdentifier)
             ?? principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
         var user = await _userManager.FindByIdAsync(userId!);

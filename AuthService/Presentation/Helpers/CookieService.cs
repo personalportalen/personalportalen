@@ -1,4 +1,5 @@
 ﻿namespace Presentation.Helpers;
+
 public class CookieService(IWebHostEnvironment env)
 {
     private readonly IWebHostEnvironment _env = env;

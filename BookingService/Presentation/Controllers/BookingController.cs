@@ -61,7 +61,7 @@ public class BookingController(IBookingService bookingService) : ControllerBase
         var result = await _bookingService.GetAllByUserIdAsync(userId);
         if (!result.Succeeded)
             return StatusCode(result.StatusCode, result.Message);
-        
+
         return Ok(new ApiResponse(true, "Bookings by user id were succesfully fetched", result.Data));
     }
 

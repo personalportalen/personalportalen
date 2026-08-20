@@ -1,10 +1,11 @@
 ﻿namespace Application.Models;
+
 public sealed record ServiceResult
 (
     bool Succeeded,
     string Message,
     int StatusCode
-) 
+)
 {
     public static ServiceResult Success(string msg = "Success", int code = 200)
         => new(true, msg, code);

@@ -2,6 +2,7 @@
 using FluentValidation;
 
 namespace Application.Validators;
+
 public class RefreshTokenValidator : AbstractValidator<RefreshTokenRequestDto>
 {
     public RefreshTokenValidator()

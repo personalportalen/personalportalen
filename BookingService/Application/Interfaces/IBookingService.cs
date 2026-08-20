@@ -4,6 +4,7 @@ using Domain.Entities;
 using System.Linq.Expressions;
 
 namespace Application.Interfaces;
+
 public interface IBookingService
 {
     Task<ServiceResult> CreateAsync(BookingRegistrationForm form);

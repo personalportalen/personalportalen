@@ -1,8 +1,8 @@
 ﻿namespace Application.Models;
 
 public sealed record ServiceResult(
-    bool Succeeded, 
-    string Message, 
+    bool Succeeded,
+    string Message,
     int StatusCode = 200,
     IEnumerable<string>? Errors = null
     )

@@ -1,4 +1,5 @@
 ﻿namespace Application.Contracts.Events;
+
 public class UserCreatedEvent
 {
     public string UserId { get; set; } = default!;

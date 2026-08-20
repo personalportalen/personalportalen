@@ -2,6 +2,7 @@
 using FluentValidation;
 
 namespace Application.Validators;
+
 public class ProfileUpdateValidator : AbstractValidator<ProfileUpdateForm>
 {
     public ProfileUpdateValidator()

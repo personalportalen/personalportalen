@@ -1,6 +1,7 @@
 ﻿using Application.Models;
 
 namespace Presentation.Models;
+
 public class ApiResponse
 {
     public bool Succeeded { get; set; }

@@ -1,4 +1,5 @@
 ﻿namespace Application.Models;
+
 public class Workshift
 {
     public string Id { get; set; } = null!;

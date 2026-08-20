@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
 namespace Application.Models;
+
 public static class ServiceResultExtensions
 {
     public static ServiceResult FromIdentityResult(this IdentityResult result, string message)

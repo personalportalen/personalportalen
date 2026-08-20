@@ -1,4 +1,5 @@
 ﻿namespace Infrastructure.Persistence.Context;
+
 public static class DemoIds
 {
     public static readonly Guid DemoUserId =

@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Infrastructure.Persistence.Repositories;
+
 public class BaseRepository<TEntity>(DataContext context) : IBaseRepository<TEntity> where TEntity : class
 {
     protected readonly DataContext _context = context;
     protected readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
 
     public async Task AddAsync(TEntity entity)
-    { 
+    {
         await _dbSet.AddAsync(entity);
     }
 
@@ -33,9 +34,9 @@ public class BaseRepository<TEntity>(DataContext context) : IBaseRepository<TEnt
 
     public Task RemoveAsync(TEntity entity)
     {
-            _dbSet.Remove(entity);
+        _dbSet.Remove(entity);
 
-            return Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
     public async Task SaveAsync()

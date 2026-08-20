@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace Infrastructure.Persistence.Repositories;
+
 public abstract class BaseRepository<TEntity>(DataContext dataContext) : IBaseRepository<TEntity> where TEntity : class
 {
     protected readonly DataContext _context = dataContext;
@@ -11,7 +12,7 @@ public abstract class BaseRepository<TEntity>(DataContext dataContext) : IBaseRe
 
     public virtual async Task AddAsync(TEntity entity)
     {
-        await _dbSet.AddAsync(entity);  
+        await _dbSet.AddAsync(entity);
     }
 
     public virtual async Task<IEnumerable<TEntity>> GetAllAsync()

@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities;
+
 public class BookingEntity(
-    string id, 
-    string workshiftId, 
-    string employeeId, 
+    string id,
+    string workshiftId,
+    string employeeId,
     string bookingMadeById,
     DateTime bookingCreated,
     string lastUpdatedById,

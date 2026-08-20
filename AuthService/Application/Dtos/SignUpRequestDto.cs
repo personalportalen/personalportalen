@@ -1,4 +1,5 @@
 ﻿namespace Application.Dtos;
+
 public class SignUpRequestDto
 {
     public string Email { get; set; } = null!;

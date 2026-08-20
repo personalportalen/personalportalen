@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 
 namespace Infrastructure.Messaging;
+
 public class ServiceBusPublisher : IEventPublisher
 {
     private readonly ServiceBusSender _sender;

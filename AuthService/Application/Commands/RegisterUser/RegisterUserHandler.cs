@@ -1,4 +1,5 @@
 ﻿namespace Application.Commands.RegisterUser;
+
 using Application.Contracts.Events;
 using Application.Interfaces;
 using Domain.Models;

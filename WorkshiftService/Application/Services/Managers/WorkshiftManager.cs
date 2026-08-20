@@ -5,6 +5,7 @@ using Domain.Entities;
 using System.Linq.Expressions;
 
 namespace Application.Services.Managers;
+
 public class WorkshiftManager(IWorkshiftRepository workshiftRepository, IBookingClient bookingClient) : IWorkshiftService
 {
     private readonly IWorkshiftRepository _repository = workshiftRepository;

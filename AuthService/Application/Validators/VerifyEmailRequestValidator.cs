@@ -2,6 +2,7 @@
 using FluentValidation;
 
 namespace Application.Validators;
+
 public class VerifyEmailRequestValidator : AbstractValidator<VerifyEmailRequestDto>
 {
     public VerifyEmailRequestValidator()

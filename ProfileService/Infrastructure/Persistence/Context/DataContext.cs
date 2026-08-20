@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Context;
+
 public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
 {
     public DbSet<ProfileEntity> Profiles => Set<ProfileEntity>();

@@ -1,10 +1,11 @@
 ﻿using Application.Models;
 
 namespace Presentation.Models;
+
 public class ApiResponse
 {
     public bool Succeeded { get; set; }
-    
+
     public string Message { get; set; }
     public object? Data { get; set; }
 

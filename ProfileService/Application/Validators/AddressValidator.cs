@@ -2,7 +2,8 @@
 using FluentValidation;
 
 namespace Application.Validators;
-public class AddressValidator : AbstractValidator<AddressDto> 
+
+public class AddressValidator : AbstractValidator<AddressDto>
 {
     public AddressValidator()
     {
