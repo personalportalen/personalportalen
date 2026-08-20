@@ -88,7 +88,5 @@ public class WorkshiftController(IWorkshiftService workshiftService) : Controlle
 
         return Ok(new ApiResponse(true, "Workshift was deleted"));
     }
+
 }
-
-
-
