@@ -19,65 +19,60 @@ public class WorkshiftController(IWorkshiftService workshiftService) : Controlle
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (userId == null)
+        if (userId is null)
             return Unauthorized();
 
         var result = await _service.CreateAsync(form, userId);
-        if (result.Succeeded)
-        {
-            return Ok(new ApiResponse(true, "Workshift was added", result));
-        }
-        return BadRequest(ModelState);
+
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
+
+        return Ok(new ApiResponse(true, "Workshift was added"));
     }
 
     [HttpGet("getall")]
     public async Task<IActionResult> GetAll()
     {
-
         var result = await _service.GetAllAsync();
-        if (result.Succeeded)
-        {
-            return Ok(new ApiResponse(true, "Workshifts were fetched", result.Result));
-        }
-        return StatusCode(500);
 
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
+
+        return Ok(new ApiResponse(true, "Workshifts were fetched", result.Data));
     }
 
     [HttpGet("getunbooked")]
     public async Task<IActionResult> GetUnbooked()
     {
-
         var result = await _service.GetUnbookedAsync();
-        if (result.Succeeded)
-        {
-            return Ok(new ApiResponse(true, "Workshifts were fetched", result.Result));
-        }
-        return StatusCode(500);
 
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
+
+        return Ok(new ApiResponse(true, "Workshifts were fetched", result.Data));
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(string id)
     {
         var result = await _service.GetAsync(x => x.Id == id);
-        if (result.Succeeded)
-        {
-            return Ok(new ApiResponse(true, "Workshift was fetched", result.Result));
-        }
-        return StatusCode(500);
+
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
+
+        return Ok(new ApiResponse(true, "Workshift was fetched", result.Data));
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin,Passledare")]
-    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] WorkshiftUpdateForm form)
+    public async Task<IActionResult> Update(
+        [FromRoute] string id,
+        [FromBody] WorkshiftUpdateForm form)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
         var result = await _service.UpdateAsync(id, form);
 
         if (!result.Succeeded)
-            return StatusCode(500);
+            return StatusCode(result.StatusCode, result.Message);
 
         return Ok(new ApiResponse(true, "Workshift was updated"));
     }
@@ -88,11 +83,9 @@ public class WorkshiftController(IWorkshiftService workshiftService) : Controlle
     {
         var result = await _service.DeleteAsync(id);
 
-        if (result.Succeeded)
-        {
-            return Ok(new ApiResponse(true, "Workshift was deleted"));
-        }
-        return StatusCode(500, "Workshift could not be deleted");
-    }
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
 
+        return Ok(new ApiResponse(true, "Workshift was deleted"));
+    }
 }

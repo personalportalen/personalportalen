@@ -14,7 +14,6 @@ const ProfileCompletionGuard = () => {
   }
 
   if (isAdmin()) {
-    console.log('aaaaaadmin');
     return <Outlet />;
   }
 
@@ -23,6 +22,7 @@ const ProfileCompletionGuard = () => {
   }
 
   if (!isProfileComplete) {
+    console.log('isProfileComplete', isProfileComplete);
     return (
       <Navigate
         to={ROUTES.COMPLETE_PROFILE}

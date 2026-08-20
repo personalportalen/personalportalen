@@ -1,7 +1,5 @@
-﻿namespace Application.Interfaces
+﻿namespace Application.Interfaces;
+public interface IBookingClient
 {
-    public interface IBookingClient
-    {
-        Task<HashSet<string>> GetBookedWorkshiftIdsAsync();
-    }
+    Task<HashSet<string>> GetBookedWorkshiftIdsAsync();
 }

@@ -6,8 +6,8 @@ using Domain.Models;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure.Authentication;
-using Infrastructure.Context;
 using Infrastructure.Messaging;
+using Infrastructure.Persistence.Context;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -99,12 +99,10 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Handles authentication, JWT, and refresh tokens"
     });
 
-    // XML comments
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     options.IncludeXmlComments(xmlPath);
 
-    // 🔐 JWT Auth
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -126,7 +124,7 @@ builder.Services.AddSwaggerGen(options =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });

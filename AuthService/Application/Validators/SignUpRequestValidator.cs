@@ -16,6 +16,5 @@ public class SignUpRequestValidator : AbstractValidator<SignUpRequestDto>
         RuleFor(x => x.ConfirmPassword)
             .Equal(x => x.Password)
             .WithMessage("Passwords must match");
-
     }
 }

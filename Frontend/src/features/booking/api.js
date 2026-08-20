@@ -10,7 +10,7 @@ export async function getAll() {
 }
 
 export const createBooking = (payload) => {
-  return apiFetch(API_ENDPOINTS.booking, 'create', {
+  return apiFetch(API_ENDPOINTS.booking, 'booking', {
     method: 'POST',
     body: JSON.stringify(payload),
   });

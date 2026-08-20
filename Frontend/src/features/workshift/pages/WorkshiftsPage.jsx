@@ -25,12 +25,13 @@ const WorkshiftsPage = () => {
 
   const fetchWorkshifts = async () => {
     try {
-      if (isAdmin) {
+      if (isAdmin()) {
         const workshiftsData = await getWorkshifts();
         setWorkshifts(workshiftsData);
       } else {
         const workshiftsData = await getUnbookedWorkshifts();
         setWorkshifts(workshiftsData);
+        console.log('workshiftsData', workshiftsData);
       }
     } catch (error) {
       console.error(error);
@@ -83,11 +84,11 @@ const WorkshiftsPage = () => {
             (profile) => profile.userId === booking?.employeeId,
           );
 
-          console.log('booking employeeId:', booking?.employeeId);
+          /*           console.log('booking employeeId:', booking?.employeeId);
           console.log(
             'profile userIds:',
             profiles.map((p) => p.userId),
-          );
+          ); */
           return (
             <WorkshiftCard
               key={workshift.id}

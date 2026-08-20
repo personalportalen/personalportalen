@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Presentation.Models;
 using System.Security.Claims;
 
@@ -18,17 +17,20 @@ public class ProfileController(IProfileService profileService) : ControllerBase
     [HttpGet("getprofile")]
     public async Task<IActionResult> Get()
     {
-        var userId = User.Identity?.Name;
-        if (string.IsNullOrWhiteSpace(userId))
-            return Unauthorized(new ApiResponse(false, "Unauthorized", userId));
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId is null)
+            return Unauthorized();
 
         var result = await _profileService.GetProfile(userId);
-        if (result.Succeeded)
-        {
-            return Ok(new ApiResponse(true, "User was found", result));
-        }
 
-        return StatusCode(result.StatusCode, new ApiResponse(false, "No user found", result));
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
+
+        return Ok(new ApiResponse(
+            true,
+            "Profile was found",
+            result.Data));
     }
 
     [Authorize(Roles = "Admin")]
@@ -36,62 +38,68 @@ public class ProfileController(IProfileService profileService) : ControllerBase
     public async Task<IActionResult> GetAll()
     {
         var result = await _profileService.GetAllProfiles();
-        if (result.Succeeded)
-        {
-            return Ok(new ApiResponse(true, "Profiles were found", result.Data));
-        }
 
-        return StatusCode(result.StatusCode, new ApiResponse(false, "No profiles found", result));
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
 
+        return Ok(new ApiResponse(
+            true,
+            "Profiles were found",
+            result.Data));
     }
 
-
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] ProfileCreateForm form)
     {
         var result = await _profileService.CreateProfile(form);
-        if (result.Succeeded)
-        {
-            return Ok(new ApiResponse(true, "Successfully created profile", result));
-        }
-        return StatusCode(result.StatusCode, new ApiResponse(false, "Could not create profile", result));
+
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
+
+        return Ok(new ApiResponse(
+            true,
+            "Profile was created",
+            result.Data));
     }
 
+    [Authorize]
     [HttpPut("update")]
-    public async Task<IActionResult> Update([FromBody] ProfileUpdateForm dto)
+    public async Task<IActionResult> Update([FromBody] ProfileUpdateForm form)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse(false, "Profile data is required"));
-
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (string.IsNullOrEmpty(userId))
-            return Unauthorized(new ApiResponse(false, "User id not found"));
+        if (userId is null)
+            return Unauthorized();
 
-        var result = await _profileService.UpdateProfile(userId, dto);
+        var result = await _profileService.UpdateProfile(userId, form);
 
         if (!result.Succeeded)
-            return StatusCode(result.StatusCode, new ApiResponse(false, "Could not update profile", result));
+            return StatusCode(result.StatusCode, result.Message);
 
-        return Ok(new ApiResponse(true, "Profile was updated", result));
+        return Ok(new ApiResponse(
+            true,
+            "Profile was updated",
+            result.Data));
     }
 
+    [Authorize]
     [HttpPut("complete")]
-    public async Task<IActionResult> Complete([FromBody] CompleteProfileForm dto)
+    public async Task<IActionResult> Complete([FromBody] CompleteProfileForm form)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(new ApiResponse(false, "Profile data is required"));
-
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if (string.IsNullOrEmpty(userId))
-            return Unauthorized(new ApiResponse(false, "User id not found"));
+        if (userId is null)
+            return Unauthorized();
 
-        var result = await _profileService.CompleteProfile(userId, dto);
+        var result = await _profileService.CompleteProfile(userId, form);
 
         if (!result.Succeeded)
-            return StatusCode(result.StatusCode, new ApiResponse(false, "Could not complete profile", result));
+            return StatusCode(result.StatusCode, result.Message);
 
-        return Ok(new ApiResponse(true, "Profile was completed", result));
+        return Ok(new ApiResponse(
+            true,
+            "Profile was completed",
+            result.Data));
     }
 }

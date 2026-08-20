@@ -12,252 +12,101 @@ public class WorkshiftManager(IWorkshiftRepository workshiftRepository, IBooking
 
     public async Task<ServiceResult> CreateAsync(WorkshiftRegistrationForm form, string userId)
     {
-        try
-        {
-            var entity = new WorkshiftEntity
-            {
-                Id = Guid.NewGuid().ToString(),
-                Area = form.Area,
-                Level = form.Level,
-                Starttime = form.Starttime,
-                Endtime = form.Endtime,
-                EmployeeId = form.EmployeeId,
-                AddedByUserId = userId,
-                AddedTime = DateTime.Now
-            };
+        var entity = new WorkshiftEntity
+        (
+            Guid.NewGuid().ToString(),
+            form.Area,
+            form.Level,
+            form.Starttime,
+            form.Endtime,
+            form.EmployeeId,
+            userId,
+            DateTime.UtcNow
+        );
 
-            var result = await _repository.AddAsync(entity);
-            if (result.Succeeded)
-            {
-                return new ServiceResult
-                {
-                    Succeeded = true,
-                };
-            }
+        await _repository.AddAsync(entity);
+        await _repository.SaveAsync();
 
-            return new ServiceResult
-            {
-                Succeeded = false,
-            };
-
-        }
-        catch (Exception ex)
-        {
-            return new ServiceResult
-            {
-                Succeeded = false,
-                Message = ex.Message
-            };
-        }
-
+        return ServiceResult.Success();
     }
 
     public async Task<ServiceResult<IEnumerable<Workshift>>> GetAllAsync()
     {
-        try
-        {
-            var entities = await _repository.GetAllAsync();
+        var entities = await _repository.GetAllAsync();
+        var workshifts = entities.Select(MapToModel);
 
-            if (!entities.Succeeded)
-            {
-                return new ServiceResult<IEnumerable<Workshift>>
-                {
-                    Succeeded = false
-                };
-            }
-
-            var workshifts = entities.Result
-                .Select(x => new Workshift
-                {
-                    Id = x.Id,
-                    Area = x.Area,
-                    Level = x.Level,
-                    Starttime = x.Starttime,
-                    Endtime = x.Endtime,
-                    EmployeeId = x.EmployeeId,
-                    AddedByUserId = x.AddedByUserId,
-                    AddedTime = x.AddedTime
-                });
-
-            return new ServiceResult<IEnumerable<Workshift>>
-            {
-                Succeeded = true,
-                Result = workshifts
-            };
-        }
-        catch (Exception ex)
-        {
-            return new ServiceResult<IEnumerable<Workshift>>
-            {
-                Succeeded = false,
-                Message = ex.Message
-            };
-        }
+        return ServiceResult<IEnumerable<Workshift>>.Success(workshifts!);
     }
 
     public async Task<ServiceResult<IEnumerable<Workshift>>> GetUnbookedAsync()
     {
-        try
-        {
-            var entities = await _repository.GetAllAsync();
+        var entities = await _repository.GetAllAsync();
+        var bookedWorkshiftIds =
+            await _bookingClient.GetBookedWorkshiftIdsAsync();
 
-            if (!entities.Succeeded)
-            {
-                return new ServiceResult<IEnumerable<Workshift>>
-                {
-                    Succeeded = false
-                };
-            }
+        var workshifts = entities
+            .Where(x => !bookedWorkshiftIds.Contains(x.Id))
+            .Select(MapToModel)
+            .ToList();
 
-            var bookedWorkshiftIds =
-                await _bookingClient.GetBookedWorkshiftIdsAsync();
-
-            var workshifts = entities.Result
-                .Where(x => !bookedWorkshiftIds.Contains(x.Id))
-                .Select(x => new Workshift
-                {
-                    Id = x.Id,
-                    Area = x.Area,
-                    Level = x.Level,
-                    Starttime = x.Starttime,
-                    Endtime = x.Endtime,
-                    EmployeeId = x.EmployeeId,
-                    AddedByUserId = x.AddedByUserId,
-                    AddedTime = x.AddedTime
-                });
-
-            return new ServiceResult<IEnumerable<Workshift>>
-            {
-                Succeeded = true,
-                Result = workshifts
-            };
-        }
-        catch (Exception ex)
-        {
-            return new ServiceResult<IEnumerable<Workshift>>
-            {
-                Succeeded = false,
-                Message = ex.Message
-            };
-        }
+        return ServiceResult<IEnumerable<Workshift>>.Success(workshifts);
     }
 
     public async Task<ServiceResult<Workshift>> GetAsync(Expression<Func<WorkshiftEntity, bool>> expression)
     {
-        try
-        {
-            var entity = await _repository.GetAsync(expression);
-            if (entity.Succeeded)
-            {
-                var workshift = new Workshift
-                {
-                    Id = entity.Result.Id,
-                    Area = entity.Result.Area,
-                    Level = entity.Result.Level,
-                    Starttime = entity.Result.Starttime,
-                    Endtime = entity.Result.Endtime,
-                    EmployeeId = entity.Result.EmployeeId,
-                    AddedByUserId = entity.Result.AddedByUserId,
-                    AddedTime = entity.Result.AddedTime
-                };
+        var entity = await _repository.GetAsync(expression);
 
-                return new ServiceResult<Workshift>
-                {
-                    Succeeded = true,
-                    Result = workshift
-                };
-            }
+        if (entity is null)
+            return ServiceResult<Workshift>.Fail("Booking was not found", 404);
 
-            return new ServiceResult<Workshift>
-            {
-                Succeeded = false,
-                Message = entity.Error
-            };
-
-        }
-        catch (Exception ex)
-        {
-            return new ServiceResult<Workshift>
-            {
-                Succeeded = false,
-                Message = ex.Message
-            };
-        }
+        return ServiceResult<Workshift>.Success(MapToModel(entity));
     }
 
     public async Task<ServiceResult> UpdateAsync(string id, WorkshiftUpdateForm form)
     {
-        try
-        {
-            var existingEntity = await _repository.GetAsync(x => x.Id == id);
+        var existingEntity = await _repository.GetAsync(x => x.Id == id);
 
-            if (existingEntity == null)
-            {
-                return new ServiceResult
-                {
-                    Succeeded = false
-                };
-            }
+        if (existingEntity is null)
+            return ServiceResult.Fail("Booking was not found", 404);
 
-            existingEntity.Result.Area = form.Area;
-            existingEntity.Result.Level = form.Level;
-            existingEntity.Result.Starttime = form.Starttime;
-            existingEntity.Result.Endtime = form.Endtime;
-            existingEntity.Result.EmployeeId = form.EmployeeId;
+        existingEntity.Update(
+            form.Area,
+            form.Level,
+            form.Starttime,
+            form.Endtime,
+            form.EmployeeId);
 
-            var result = await _repository.UpdateAsync(existingEntity.Result);
+        await _repository.UpdateAsync(existingEntity);
+        await _repository.SaveAsync();
 
-            return new ServiceResult
-            {
-                Succeeded = result.Succeeded
-            };
-        }
-        catch (Exception ex)
-        {
-            return new ServiceResult
-            {
-                Succeeded = false,
-                Message = ex.Message
-            };
-        }
+        return ServiceResult.Success();
     }
 
     public async Task<ServiceResult> DeleteAsync(string id)
     {
-        try
-        {
-            var entity = await _repository.GetAsync(x => x.Id == id);
-            if (entity.Succeeded)
-            {
-                var result = await _repository.RemoveAsync(entity.Result!);
-                if (result.Succeeded)
-                {
-                    return new ServiceResult
-                    {
-                        Succeeded = true,
-                    };
-                }
-                return new ServiceResult
-                {
-                    Succeeded = false,
-                    Message = result.Error!
-                };
+        var entity = await _repository.GetAsync(x => x.Id == id);
 
-            }
-            return new ServiceResult
-            {
-                Succeeded = false,
-                Message = entity.Error!
-            };
+        if (entity is null)
+            return ServiceResult.Fail("Workshift not found.", 404);
 
-        }
-        catch (Exception ex)
+        await _repository.RemoveAsync(entity);
+        await _repository.SaveAsync();
+
+        return ServiceResult.Success();
+    }
+
+    private static Workshift MapToModel(WorkshiftEntity entity)
+    {
+        return new Workshift
         {
-            return new ServiceResult
-            {
-                Succeeded = false,
-                Message = ex.Message
-            };
-        }
+            Id = entity.Id,
+            Area = entity.Area,
+            Level = entity.Level,
+            Starttime = entity.Starttime,
+            Endtime = entity.Endtime,
+            EmployeeId = entity.EmployeeId,
+            AddedByUserId = entity.AddedByUserId,
+            AddedTime = entity.AddedTime
+        };
     }
 }

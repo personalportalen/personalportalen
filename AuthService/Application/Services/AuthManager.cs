@@ -22,7 +22,6 @@ public class AuthManager(UserManager<AppUser> userManager, SignInManager<AppUser
 
     public async Task<ServiceResult<SignUpResponseDto>> SignUpAsync(SignUpRequestDto request)
     {
-        
             var existingAccount = await _userManager.FindByEmailAsync(request.Email);
             if (existingAccount != null)
                 return ServiceResult<SignUpResponseDto>.Fail("Email is already in use", 409);
@@ -56,7 +55,6 @@ public class AuthManager(UserManager<AppUser> userManager, SignInManager<AppUser
 
     public async Task<ServiceResult<SignInResponseDto>> SignInAsync(SignInRequestDto request)
     {
-   
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
             return  ServiceResult<SignInResponseDto>.Fail("User not found", 404);
@@ -135,7 +133,4 @@ public class AuthManager(UserManager<AppUser> userManager, SignInManager<AppUser
         var user = await _userManager.FindByEmailAsync(request.Email);
         return user != null;
     }
-
-
-
 }

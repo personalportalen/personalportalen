@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models;
+using System.Security.Claims;
 
 namespace Presentation.Controllers;
 
@@ -13,123 +14,110 @@ public class BookingController(IBookingService bookingService) : ControllerBase
     private readonly IBookingService _bookingService = bookingService;
 
     [Authorize]
-    [HttpPost("create")]
+    [HttpPost("booking")]
     public async Task<IActionResult> Create([FromBody] BookingRegistrationForm form)
     {
-        
-            var userId = User.Identity!.Name;
-            if (userId != null)
-            {
-                form.EmployeeId = userId;
-                form.BookingMadeById = userId;
-                form.LastUpdatedById = userId;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                var res = await _bookingService.CreateAsync(form);
-                if (res.Succeeded)
-                {
-                    return Ok();
-                }
-                return StatusCode(500);
-            }
-            return BadRequest();
+        if (userId is null)
+            return Unauthorized();
 
+        form.EmployeeId = userId;
+        form.BookingMadeById = userId;
+        form.LastUpdatedById = userId;
+
+        var result = await _bookingService.CreateAsync(form);
+
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
+
+        return Ok(new ApiResponse(true, "Booking was created"));
     }
 
     [Authorize(Roles = "Admin,Passledare")]
     [HttpGet("getall")]
     public async Task<IActionResult> GetAll()
     {
-        var res = await _bookingService.GetAllAsync();
-        if (res.Succeeded)
-        {
-            return Ok(new ApiResponse(true, "Bookings were successfully fetched", res.Result));
-        }
+        var result = await _bookingService.GetAllAsync();
 
-        if (res.Message == "Arbetspasset är redan bokat.")
-        {
-            return Conflict(res.Message);
-        }
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
 
-        return StatusCode(500);
+        return Ok(new ApiResponse(
+            true,
+            "Bookings were successfully fetched",
+            result.Data));
     }
 
     [Authorize]
     [HttpGet("getallbyuserid")]
     public async Task<IActionResult> GetAllByUserId()
     {
-        var userId = User.Identity?.Name;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if(userId != null)
-        {
-            var res = await _bookingService.GetAllAsync();
-            if (res.Succeeded)
-            {
-                var bookings = res.Result!.Where(x => x.BookingMadeById == userId);
-                return Ok(new ApiResponse(true, "Bookings by user id were succesfully fetched", bookings));
-            }
-            return StatusCode(500);
-        }
-        return BadRequest();
+        if (userId is null)
+            return Unauthorized();
+
+        var result = await _bookingService.GetAllByUserIdAsync(userId);
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
+        
+        return Ok(new ApiResponse(true, "Bookings by user id were succesfully fetched", result.Data));
     }
 
     [Authorize]
-    [HttpGet("getbyuserid/{id}")]
-    public async Task<IActionResult> GetByUserId(string id)
+    [HttpGet("my")]
+    public async Task<IActionResult> GetMyBookings()
     {
-        if(id != null)
-        {
-            var res = await _bookingService.GetAsync(x => x.BookingMadeById == id);
-            if (res.Succeeded)
-            {
-                var booking = res.Result;
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                return Ok(booking);
-            }
-            return StatusCode(500);
-        }
-        return BadRequest();
+        if (userId is null)
+            return Unauthorized();
+
+        var result = await _bookingService.GetAllByUserIdAsync(userId);
+
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
+
+        return Ok(new ApiResponse(
+            true,
+            "Bookings were successfully fetched",
+            result.Data));
     }
 
     //[Authorize]
     [HttpGet("booked")]
     public async Task<IActionResult> GetBooked()
     {
-        var res = await _bookingService.GetBookedWorkshiftIdsAsync();
+        var result = await _bookingService.GetBookedWorkshiftIdsAsync();
 
-        if (!res.Succeeded)
-        {
-            return StatusCode(500);
-        }
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
 
-        return Ok(res.Result);
+        return Ok(result.Data);
     }
 
     [Authorize]
     [HttpPut]
-    public async Task<IActionResult> Update([FromBody]BookingUpdateForm form)
+    public async Task<IActionResult> Update([FromBody] BookingUpdateForm form)
     {
-        var res = await _bookingService.UpdateAsync(form);
-        if (res.Succeeded)
-        {
-            return Ok();
-        }
-        return StatusCode(500);
- 
+        var result = await _bookingService.UpdateAsync(form);
+
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
+
+        return Ok(new ApiResponse(true, "Booking was updated"));
     }
 
     [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        if(id != null)
-        {
-            var res = await _bookingService.DeleteAsync(id);
-            if (res.Succeeded)
-            {
-                return Ok();
-            }
-            return StatusCode(500);
-        }
-        return BadRequest();
+        var result = await _bookingService.DeleteAsync(id);
+
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, result.Message);
+
+        return Ok(new ApiResponse(true, "Booking was deleted"));
     }
 }

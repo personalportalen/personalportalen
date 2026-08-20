@@ -34,7 +34,6 @@ public class UserCreatedEventConsumer : IHostedService
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-
         _processor.ProcessMessageAsync += ProcessMessage;
         _processor.ProcessErrorAsync += ProcessError;
 

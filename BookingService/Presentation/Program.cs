@@ -3,7 +3,7 @@ using Application.Services;
 using Application.Validators;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Infrastructure.Persistance.Context;
+using Infrastructure.Persistence.Context;
 using Infrastructure.Persistance.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

@@ -5,37 +5,36 @@ on:
     branches:
       - main
     paths:
-      - 'AuthService/**'
-      - 'BookingService/**'
-      - 'ProfileService/**'
-      - 'WorkshiftService/**'
-      - 'YarpGateway/**'
-      - 'Shared/**'
-      - 'tests/**'
-      - '.github/workflows/backend-ci.yml'
-      - 'Directory.Packages.props'
-      - 'global.json'
-      - 'StaffSystem.slnx'
+      - "AuthService/**"
+      - "BookingService/**"
+      - "ProfileService/**"
+      - "WorkshiftService/**"
+      - "YarpGateway/**"
+      - "Shared/**"
+      - "tests/**"
+      - ".github/workflows/main.yml"
+      - "Directory.Packages.props"
+      - "global.json"
+      - "StaffSystem.slnx"
 
   pull_request:
     branches:
       - main
     paths:
-      - 'AuthService/**'
-      - 'BookingService/**'
-      - 'ProfileService/**'
-      - 'WorkshiftService/**'
-      - 'YarpGateway/**'
-      - 'Shared/**'
-      - 'tests/**'
-      - '.github/workflows/backend-ci.yml'
-      - 'Directory.Packages.props'
-      - 'global.json'
-      - 'StaffSystem.slnx'
+      - "AuthService/**"
+      - "BookingService/**"
+      - "ProfileService/**"
+      - "WorkshiftService/**"
+      - "YarpGateway/**"
+      - "Shared/**"
+      - "tests/**"
+      - ".github/workflows/main.yml"
+      - "Directory.Packages.props"
+      - "global.json"
+      - "StaffSystem.slnx"
 
 permissions:
   contents: read
-  security-events: write
 
 jobs:
   backend-ci:
@@ -54,7 +53,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', 'Directory.Packages.props') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
 
@@ -69,21 +68,6 @@ jobs:
 
       - name: Run tests
         run: dotnet test StaffSystem.slnx --configuration Release --no-build --verbosity normal
-
-      - name: Publish AuthService
-        run: dotnet publish ./AuthService/AuthService.csproj -c Release -o ./publish/AuthService
-
-      - name: Publish BookingService
-        run: dotnet publish ./BookingService/BookingService.csproj -c Release -o ./publish/BookingService
-
-      - name: Publish ProfileService
-        run: dotnet publish ./ProfileService/ProfileService.csproj -c Release -o ./publish/ProfileService
-
-      - name: Publish WorkshiftService
-        run: dotnet publish ./WorkshiftService/WorkshiftService.csproj -c Release -o ./publish/WorkshiftService
-
-      - name: Publish YarpGateway
-        run: dotnet publish ./YarpGateway/YarpGateway.csproj -c Release -o ./publish/YarpGateway
 
       - name: Build AuthService Docker image
         run: docker build -t authservice:latest ./AuthService

@@ -1,6 +1,5 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
-using Application.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Helpers;
@@ -11,72 +10,64 @@ namespace Presentation.Controllers;
 
 [Route("auth")]
 [ApiController]
-public class AuthController(IAuthService authService, CookieService cookieService) : ControllerBase
+public class AuthController(
+    IAuthService authService,
+    CookieService cookieService) : ControllerBase
 {
     private readonly IAuthService _authService = authService;
     private readonly CookieService _cookieService = cookieService;
-    /// <summary>
-    /// Register a new user
-    /// </summary>
+
     [HttpPost("signup")]
     public async Task<IActionResult> SignUp([FromBody] SignUpRequestDto dto)
     {
         var result = await _authService.SignUpAsync(dto);
 
-        return result.Succeeded
-           ? Ok(new ApiResponse(true, "User signed up succesfully", result))
-           : StatusCode(result.StatusCode, new ApiResponse(false, result.Message));
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, new ApiResponse(false, result.Message));
+
+        return Ok(new ApiResponse(true, "User signed up successfully"));
     }
 
-    /// <summary>
-    /// Sign in user and set auth cookies
-    /// </summary>
     [HttpPost("signin")]
     public async Task<IActionResult> SignIn([FromBody] SignInRequestDto dto)
     {
-
         var result = await _authService.SignInAsync(dto);
 
-        if (!result.Succeeded || result.Data == null)
-        {
+        if (!result.Succeeded || result.Data is null)
             return StatusCode(result.StatusCode, new ApiResponse(false, result.Message));
-        }
 
-        Response.Cookies.Append("accessToken", result.Data.Token, _cookieService.CreateAccessTokenCookie());
-        Response.Cookies.Append("refreshToken", result.Data.RefreshToken, _cookieService.CreateRefreshTokenCookie());
+        Response.Cookies.Append(
+            "accessToken",
+            result.Data.Token,
+            _cookieService.CreateAccessTokenCookie());
 
-        return result.Succeeded
-            ? Ok(new ApiResponse(true, "User signed in successfully"))
-            : StatusCode(result.StatusCode, new ApiResponse(false, result.Message, result.Data));
+        Response.Cookies.Append(
+            "refreshToken",
+            result.Data.RefreshToken,
+            _cookieService.CreateRefreshTokenCookie());
+
+        return Ok(new ApiResponse(true, "User signed in successfully"));
     }
 
-    /// <summary>
-    /// Sign out user and clear cookies
-    /// </summary>
     [HttpPost("signout")]
     public async Task<IActionResult> Logout()
     {
-        var cookieOptions = new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Lax,
-            Path = "/"
-        };
-
-        Response.Cookies.Delete("accessToken", cookieOptions);
-        Response.Cookies.Delete("refreshToken", cookieOptions);
-
         var result = await _authService.SignOutAsync();
 
-        return result.Succeeded
-            ? Ok(new ApiResponse(true, "User was signed out succesfully"))
-            : StatusCode(result.StatusCode, new ApiResponse(false, "User was not signed out due to an error", result));
+        Response.Cookies.Delete(
+            "accessToken",
+            _cookieService.CreateAccessTokenCookie());
+
+        Response.Cookies.Delete(
+            "refreshToken",
+            _cookieService.CreateRefreshTokenCookie());
+
+        if (!result.Succeeded)
+            return StatusCode(result.StatusCode, new ApiResponse(false, result.Message));
+
+        return Ok(new ApiResponse(true, "User was signed out successfully"));
     }
 
-    /// <summary>
-    /// Refresh access token using refresh token cookie
-    /// </summary>
     [HttpPost("refresh-token")]
     public async Task<IActionResult> RefreshToken()
     {
@@ -87,46 +78,34 @@ public class AuthController(IAuthService authService, CookieService cookieServic
 
         var result = await _authService.RefreshTokenAsync(refreshToken);
 
-        if (!result.Succeeded)
+        if (!result.Succeeded || result.Data is null)
             return StatusCode(result.StatusCode, new ApiResponse(false, result.Message));
 
-        Response.Cookies.Append("accessToken", result.Data.Token, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Lax,
-            Expires = DateTime.UtcNow.AddMinutes(60)
-        });
+        Response.Cookies.Append(
+            "accessToken",
+            result.Data.Token,
+            _cookieService.CreateAccessTokenCookie());
 
-        Response.Cookies.Append("refreshToken", result.Data.RefreshToken, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            SameSite = SameSiteMode.Lax,
-            Expires = DateTime.UtcNow.AddDays(7)
-        });
+        Response.Cookies.Append(
+            "refreshToken",
+            result.Data.RefreshToken,
+            _cookieService.CreateRefreshTokenCookie());
 
         return Ok(new ApiResponse(true, "Token refreshed"));
     }
 
-    /// <summary>
-    /// Verify if email exists
-    /// </summary>
     [HttpPost("verifyemail")]
-    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequestDto request)
+    public async Task<IActionResult> VerifyEmail(
+        [FromBody] VerifyEmailRequestDto request)
     {
-        var result = await _authService.UserExists(request)
-            ? ServiceResult.Success("Email exists")
-            : ServiceResult.Fail("Email does not exist", 404);
+        var exists = await _authService.UserExists(request);
 
-        return result.Succeeded
-            ? Ok(new ApiResponse(true, "Email was verified successfully", result))
-            : StatusCode(result.StatusCode, new ApiResponse(false, "Email was not verified due to an error", result));
+        if (!exists)
+            return NotFound(new ApiResponse(false, "Email does not exist"));
+
+        return Ok(new ApiResponse(true, "Email was verified successfully"));
     }
 
-    /// <summary>
-    /// Get current logged in user
-    /// </summary>
     [HttpGet("me")]
     [Authorize]
     public IActionResult Me()
@@ -134,6 +113,9 @@ public class AuthController(IAuthService authService, CookieService cookieServic
         var email = User.FindFirst(ClaimTypes.Email)?.Value;
         var roles = User.FindAll(ClaimTypes.Role).Select(r => r.Value);
 
-        return Ok(new ApiResponse(true, "User fetched", new { email, roles }));
+        return Ok(new ApiResponse(
+            true,
+            "User fetched",
+            new { email, roles }));
     }
 }

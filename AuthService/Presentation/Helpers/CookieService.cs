@@ -1,12 +1,7 @@
 ﻿namespace Presentation.Helpers;
-public class CookieService
+public class CookieService(IWebHostEnvironment env)
 {
-    private readonly IWebHostEnvironment _env;
-
-    public CookieService(IWebHostEnvironment env)
-    {
-        _env = env;
-    }
+    private readonly IWebHostEnvironment _env = env;
 
     public CookieOptions CreateAccessTokenCookie()
     {

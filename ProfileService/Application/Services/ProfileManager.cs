@@ -4,25 +4,38 @@ using Application.Interfaces;
 using Application.Models;
 using Domain.Entities;
 
-
 namespace Application.Services;
 
-public class ProfileManager(IProfileRepository profileRepository, IAddressRepository addressRepository) : IProfileService
+public class ProfileManager(
+    IProfileRepository profileRepository,
+    IAddressRepository addressRepository) : IProfileService
 {
     private readonly IProfileRepository _profileRepository = profileRepository;
     private readonly IAddressRepository _addressRepository = addressRepository;
 
+    public async Task<ServiceResult<ProfileEntity>> CreateProfile(ProfileCreateForm form)
+    {
+        var profile = new ProfileEntity
+        {
+            UserId = form.UserId,
+            EmailAddress = form.EmailAddress
+        };
+
+        await _profileRepository.AddAsync(profile);
+        await _profileRepository.SaveAsync();
+
+        return ServiceResult<ProfileEntity>.Success(profile);
+    }
+
     public async Task<ServiceResult<Profile>> GetProfile(string userId)
     {
         var profile = await _profileRepository.GetByIdAsync(userId);
-        if (profile == null)
+
+        if (profile is null)
             return ServiceResult<Profile>.Fail("No profile found", 404);
 
-        var model = ProfileFactory.CreateProfileModel(profile);
-        if (model == null)
-            return ServiceResult<Profile>.Fail("Profile could not be created", 500);
-
-        return ServiceResult<Profile>.Success(model);
+        return ServiceResult<Profile>.Success(
+            ProfileFactory.CreateProfileModel(profile));
     }
 
     public async Task<ServiceResult<List<ProfileSummary>>> GetAllProfiles()
@@ -31,74 +44,60 @@ public class ProfileManager(IProfileRepository profileRepository, IAddressReposi
 
         var models = profiles
             .Select(ProfileFactory.CreateProfileSummary)
-            .Where(profile => profile != null)
+            .Where(profile => profile is not null)
             .ToList();
 
-        return ServiceResult<List<ProfileSummary>>.Success(models);
+        return ServiceResult<List<ProfileSummary>>.Success(models!);
     }
 
 
-    public async Task<ServiceResult<ProfileEntity>> CreateProfile(ProfileCreateForm form)
-    {
 
-        ProfileEntity profileEntity = new()
-        {
-            UserId = form.UserId,
-            EmailAddress = form.EmailAddress,
-            FirstName = "",
-            LastName = "",
-            PhoneNumber = "",
-            AddressId = 5,
-        };
-
-        var resultProfile = await _profileRepository.AddAsync(profileEntity);
-        if (resultProfile == null)
-        {
-            return ServiceResult<ProfileEntity>.Fail("No profile found", 404);
-        }
-        await _profileRepository.SaveAsync();
-
-        return ServiceResult<ProfileEntity>.Success(resultProfile);
-    }
-
-    public async Task<ServiceResult<ProfileEntity>> UpdateProfile(string userId, ProfileUpdateForm form)
+    public async Task<ServiceResult<ProfileEntity>> UpdateProfile(
+        string userId,
+        ProfileUpdateForm form)
     {
         var profile = await _profileRepository.GetByIdAsync(userId);
-        if (profile == null)
+
+        if (profile is null)
             return ServiceResult<ProfileEntity>.Fail("No profile found", 404);
+
         profile.FirstName = form.FirstName ?? profile.FirstName;
         profile.LastName = form.LastName ?? profile.LastName;
         profile.PhoneNumber = form.PhoneNumber ?? profile.PhoneNumber;
 
-        if (form.Address != null)
+        if (form.Address is not null)
         {
-            AddressEntity newAddress = new()
-            {
-                Street = form.Address.Street ?? "",
-                City = form.Address.City ?? "",
-                State = form.Address.State ?? "",
-                ZipCode = form.Address.ZipCode ?? "",
-                Country = form.Address.Country ?? ""
-            };
-            var addedAddress = await _addressRepository.AddAsync(newAddress);
-            if (addedAddress == null)
-                return ServiceResult<ProfileEntity>.Fail("Address is null", 404);
-            profile.AddressId = addedAddress.Id;
+            var address = new AddressEntity(
+                5,
+                form.Address.Street ?? string.Empty,
+                form.Address.City ?? string.Empty,
+                form.Address.State ?? string.Empty,
+                form.Address.ZipCode ?? string.Empty,
+                form.Address.Country ?? string.Empty
+            );
+
+            await _addressRepository.AddAsync(address);
+            profile.AddressId = address.Id;
         }
 
         await _profileRepository.UpdateAsync(profile);
         await _profileRepository.SaveAsync();
+
         return ServiceResult<ProfileEntity>.Success(profile);
     }
 
-    public async Task<ServiceResult<ProfileEntity>> CompleteProfile(string userId, CompleteProfileForm form)
+    public async Task<ServiceResult<ProfileEntity>> CompleteProfile(
+        string userId,
+        CompleteProfileForm form)
     {
         var profile = await _profileRepository.GetByIdAsync(userId);
-        if (profile == null)
-            return ServiceResult<ProfileEntity>.Fail("No profile found.", 404);
+
+        if (profile is null)
+            return ServiceResult<ProfileEntity>.Fail("No profile found", 404);
 
         if (profile.IsProfileCompleted)
-            return ServiceResult<ProfileEntity>.Fail("Profile is already completed.", 400);
+            return ServiceResult<ProfileEntity>.Fail(
+                "Profile is already completed", 409);
 
         profile.FirstName = form.FirstName;
         profile.LastName = form.LastName;
@@ -109,13 +108,14 @@ public class ProfileManager(IProfileRepository profileRepository, IAddressReposi
         profile.UpdatedAt = DateTime.UtcNow;
 
         profile.Address = new AddressEntity
-        {
-            Street = form.Address.Street,
-            City = form.Address.City,
-            State = form.Address.State,
-            ZipCode = form.Address.ZipCode,
-            Country = form.Address.Country
-        };
+        (
+            5,
+            form.Address.Street,
+            form.Address.City,
+            form.Address.State,
+            form.Address.ZipCode,
+            form.Address.Country
+        );
 
         await _profileRepository.UpdateAsync(profile);
         await _profileRepository.SaveAsync();

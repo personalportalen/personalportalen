@@ -5,18 +5,12 @@ using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, string>
+public class RegisterUserHandler(
+    UserManager<AppUser> userManager,
+    IEventPublisher eventPublisher) : IRequestHandler<RegisterUserCommand, string>
 {
-    private readonly UserManager<AppUser> _userManager;
-    private readonly IEventPublisher _eventPublisher;
-
-    public RegisterUserHandler(
-        UserManager<AppUser> userManager,
-        IEventPublisher eventPublisher)
-    {
-        _userManager = userManager;
-        _eventPublisher = eventPublisher;
-    }
+    private readonly UserManager<AppUser> _userManager = userManager;
+    private readonly IEventPublisher _eventPublisher = eventPublisher;
 
     public async Task<string> Handle(
         RegisterUserCommand request,
@@ -32,9 +26,7 @@ public class RegisterUserHandler : IRequestHandler<RegisterUserCommand, string>
         var result = await _userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
-        {
             throw new Exception("User creation failed");
-        }
 
         await _eventPublisher.PublishUserCreated(new UserCreatedEvent
         {

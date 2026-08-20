@@ -2,6 +2,7 @@
 using FluentValidation;
 
 namespace Application.Validators;
+
 public class WorkshiftRegistrationValidator : AbstractValidator<WorkshiftRegistrationForm>
 {
     public WorkshiftRegistrationValidator()
@@ -16,6 +17,7 @@ public class WorkshiftRegistrationValidator : AbstractValidator<WorkshiftRegistr
             .NotEmpty();
 
         RuleFor(x => x.Endtime)
-            .NotEmpty();
+            .NotEmpty()
+            .GreaterThan(x => x.Starttime);
     }
 }

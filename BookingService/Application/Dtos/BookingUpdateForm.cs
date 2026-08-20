@@ -11,6 +11,5 @@ public class BookingUpdateForm
     public string EmployeeId { get; set; } = null!;
     [Required]
     public string LastUpdatedById { get; set; } = null!;
-    [Required]
     public DateTime LastUpdated { get; set; }
 }

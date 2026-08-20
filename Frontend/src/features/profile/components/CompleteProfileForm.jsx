@@ -246,7 +246,7 @@ const CompleteProfileForm = () => {
         type="email"
         disabled
         placeholder="Email"
-        value={userProfile?.data?.email || ''}
+        value={userProfile?.email || ''}
         autoComplete="email"
       />
 

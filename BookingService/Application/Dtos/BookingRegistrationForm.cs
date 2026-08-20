@@ -8,6 +8,4 @@ public class BookingRegistrationForm
     public string? EmployeeId { get; set; }
     public string? BookingMadeById { get; set; }
     public string? LastUpdatedById { get; set; }
-
-
 }

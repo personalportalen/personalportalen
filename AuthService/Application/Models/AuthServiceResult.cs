@@ -1,4 +1,4 @@
-﻿namespace Presentation.Models;
+﻿namespace Application.Models;
 public class AuthServiceResult
 {
     public bool Succeeded { get; set; }

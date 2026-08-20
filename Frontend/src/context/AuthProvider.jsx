@@ -58,11 +58,6 @@ export function AuthProvider({ children }) {
       const userData = await getMe();
       setUser(userData);
 
-      if (userData.roles?.includes('Admin')) {
-        setUserProfile(null);
-        return;
-      }
-
       try {
         const profileData = await getCurrentUserProfileWithRetry();
         setUserProfile(profileData);
@@ -134,7 +129,7 @@ export function AuthProvider({ children }) {
 
   const isAuthenticated = !!user;
   const hasProfile = !!userProfile;
-  const isProfileComplete = userProfile?.data?.isProfileCompleted === true;
+  const isProfileComplete = userProfile?.isProfileCompleted === true;
 
   const isReadyForGuards =
     !authLoading && !profileLoading && !profileRefreshing;

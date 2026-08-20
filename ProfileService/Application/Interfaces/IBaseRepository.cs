@@ -3,10 +3,10 @@
 namespace Application.Interfaces;
 public interface IBaseRepository<TEntity> where TEntity : class
 {
-    Task<TEntity> AddAsync(TEntity entity);
-    Task<bool> DeleteAsync(TEntity entity);
-    Task<List<TEntity>> GetAllAsync();
-    Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression);
-    Task<int> SaveAsync();
-    Task<TEntity> UpdateAsync(TEntity entity);
+    Task AddAsync(TEntity entity);
+    Task DeleteAsync(TEntity entity);
+    Task<IEnumerable<TEntity>> GetAllAsync();
+    Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression);
+    Task UpdateAsync(TEntity entity);
+    Task SaveAsync();
 }

@@ -1,10 +1,10 @@
-﻿using System.Net;
-using System.Text.Json;
-using Presentation.Models;
+﻿using Presentation.Models;
 
 namespace Presentation.Middleware;
 
-public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+public class ExceptionHandlingMiddleware(
+    RequestDelegate next,
+    ILogger<ExceptionHandlingMiddleware> logger)
 {
     private readonly RequestDelegate _next = next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger = logger;
@@ -19,14 +19,10 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
         {
             _logger.LogError(ex, "An unhandled exception occurred");
 
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-            var response = new ApiResponse(false, "An unexpected error occurred");
-
-            var json = JsonSerializer.Serialize(response);
-
-            await context.Response.WriteAsync(json);
+            await context.Response.WriteAsJsonAsync(
+                new ApiResponse(false, "An unexpected error occurred"));
         }
     }
 }

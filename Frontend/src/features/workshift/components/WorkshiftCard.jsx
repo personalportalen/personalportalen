@@ -55,7 +55,7 @@ const WorkshiftCard = ({
       setBookingSucceeded(false);
     }, 3000);
 
-    console.log('profile', profile);
+    //console.log('profile', profile);
     return () => clearTimeout(timer);
   }, [bookingSucceeded]);
 

@@ -6,7 +6,6 @@ public class WorkshiftUpdateValidator : AbstractValidator<WorkshiftUpdateForm>
 {
     public WorkshiftUpdateValidator()
     {
-
         RuleFor(x => x.Area)
             .NotEmpty();
 
@@ -17,6 +16,7 @@ public class WorkshiftUpdateValidator : AbstractValidator<WorkshiftUpdateForm>
             .NotEmpty();
 
         RuleFor(x => x.Endtime)
-            .NotEmpty();
+            .NotEmpty()
+            .GreaterThan(x => x.Starttime);
     }
 }
