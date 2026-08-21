@@ -92,17 +92,31 @@ jobs:
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
           script: |
+            set -e
+
             cd ~/apps/staffsystem
 
             git pull origin main
 
-            export GITHUB_REPOSITORY_OWNER="${{ github.repository_owner }}"
-            export IMAGE_TAG="${{ github.sha }}"
+            echo "${{ secrets.GHCR_TOKEN }}" | sudo docker login ghcr.io \
+              -u "${{ github.repository_owner }}" \
+              --password-stdin
 
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            sudo GITHUB_REPOSITORY_OWNER="${{ github.repository_owner }}" \
+              IMAGE_TAG="${{ github.sha }}" \
+              docker compose \
+              -f docker-compose.yml \
+              -f docker-compose.prod.yml \
+              pull
 
-            export GITHUB_REPOSITORY_OWNER="${{ github.repository_owner }}"
-            export IMAGE_TAG="${{ github.sha }}"
+            sudo GITHUB_REPOSITORY_OWNER="${{ github.repository_owner }}" \
+              IMAGE_TAG="${{ github.sha }}" \
+              docker compose \
+              -f docker-compose.yml \
+              -f docker-compose.prod.yml \
+              up -d
+
+            sudo docker ps
 
             sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml pull
             sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
