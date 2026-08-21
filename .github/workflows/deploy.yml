@@ -60,6 +60,12 @@ jobs:
             -t ghcr.io/${{ github.repository_owner }}/personalportalen/gateway:${{ github.sha }} \
             ./YarpGateway
 
+      - name: Build Frontend image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/personalportalen/frontend:${{ github.sha }} \
+            ./Frontend
+
       - name: Push AuthService image
         run: |
           docker push \
@@ -84,6 +90,11 @@ jobs:
         run: |
           docker push \
             ghcr.io/${{ github.repository_owner }}/personalportalen/gateway:${{ github.sha }}
+
+      - name: Push Frontend image
+        run: |
+          docker push \
+            ghcr.io/${{ github.repository_owner }}/personalportalen/frontend:${{ github.sha }}
 
       - name: Deploy to VM
         uses: appleboy/ssh-action@v1.2.2
