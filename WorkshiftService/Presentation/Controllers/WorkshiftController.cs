@@ -76,7 +76,7 @@ public class WorkshiftController(IWorkshiftService workshiftService) : Controlle
 
         return Ok(new ApiResponse(true, "Workshift was updated"));
     }
-    //
+    //t
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin,Passledare")]
     public async Task<IActionResult> Delete(string id)
@@ -89,3 +89,5 @@ public class WorkshiftController(IWorkshiftService workshiftService) : Controlle
         return Ok(new ApiResponse(true, "Workshift was deleted"));
     }
 }
+
+
