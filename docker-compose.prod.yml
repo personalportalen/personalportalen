@@ -9,6 +9,7 @@ services:
       - .env.prod
 
   auth-api:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/personalportalen/authservice:${IMAGE_TAG}
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=AuthDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True;
@@ -19,6 +20,8 @@ services:
       - .env.prod
 
   profile-api:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/personalportalen/profileservice:${IMAGE_TAG}
+
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=ProfileDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True;
@@ -29,6 +32,8 @@ services:
       - .env.prod
 
   booking-api:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/personalportalen/bookingservice:${IMAGE_TAG}
+
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=BookingDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True;
@@ -37,6 +42,8 @@ services:
       - .env.prod
 
   workshift-api:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/personalportalen/workshiftservice:${IMAGE_TAG}
+
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__DefaultConnection: Server=sqlserver,1433;Database=WorkShiftDb;User Id=sa;Password=${SQL_PASSWORD};TrustServerCertificate=True;
@@ -45,6 +52,8 @@ services:
       - .env.prod
 
   yarp-gateway:
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/personalportalen/gateway:${IMAGE_TAG}
+
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
