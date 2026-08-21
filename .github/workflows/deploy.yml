@@ -106,12 +106,14 @@ jobs:
             echo "IMAGE_TAG=${{ github.sha }}" >> .env.deploy
 
             sudo docker compose \
+              --env-file .env.prod \
               --env-file .env.deploy \
               -f docker-compose.yml \
               -f docker-compose.prod.yml \
               pull
 
             sudo docker compose \
+              --env-file .env.prod \
               --env-file .env.deploy \
               -f docker-compose.yml \
               -f docker-compose.prod.yml \
