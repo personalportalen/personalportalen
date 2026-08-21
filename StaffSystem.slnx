@@ -22,6 +22,7 @@
     <Project Path="WorkshiftService/Data/Infrastructure.csproj" />
     <Project Path="WorkshiftService/Domain/Domain.csproj" />
     <Project Path="WorkshiftService/Presentation/Presentation.csproj" />
+    <Project Path="WorkshiftService/WorkshiftService.Tests/WorkshiftService.Tests.csproj" />
   </Folder>
   <Folder Name="/YarpGateway/">
     <Project Path="YarpGateway/Gateway.csproj" />
