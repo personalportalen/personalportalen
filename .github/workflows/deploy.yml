@@ -102,21 +102,21 @@ jobs:
               -u "${{ github.repository_owner }}" \
               --password-stdin
 
-            sudo GITHUB_REPOSITORY_OWNER="${{ github.repository_owner }}" \
-              IMAGE_TAG="${{ github.sha }}" \
-              docker compose \
+            echo "GITHUB_REPOSITORY_OWNER=${{ github.repository_owner }}" | sudo tee .env.deploy > /dev/null
+            echo "IMAGE_TAG=${{ github.sha }}" | sudo tee -a .env.deploy > /dev/null
+
+            sudo docker compose \
+              --env-file .env.deploy \
               -f docker-compose.yml \
               -f docker-compose.prod.yml \
               pull
 
-            sudo GITHUB_REPOSITORY_OWNER="${{ github.repository_owner }}" \
-              IMAGE_TAG="${{ github.sha }}" \
-              docker compose \
+            sudo docker compose \
+              --env-file .env.deploy \
               -f docker-compose.yml \
               -f docker-compose.prod.yml \
               up -d
 
-            sudo docker ps
+            sudo rm .env.deploy
 
-            sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml pull
-            sudo docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+            sudo docker ps
